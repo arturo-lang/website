@@ -28,8 +28,8 @@ changes: #[
 
 params: #[
     basePath: arg\0
-    keywordPredicates: write.compact.json keywordPredicates ø
-    keywordRest: write.compact.json keywordRest ø
+    keywordPredicates: join.with:"|" keywordPredicates ø
+    keywordRest: join.with:"|" keywordRest ø
 ]
 
 loop changes [file, replacements][
