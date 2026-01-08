@@ -228,5 +228,5 @@ jobs:
                 echo "Channel:  ${{ inputs.channel }}"
                 echo "Version:  ${{ steps.version.outputs.tag }}"
                 echo "Binaries: $(ls files/*.zip | wc -l) files"
-                echo "URL:      https://188.245.97.105/${{ inputs.channel }}"
+                echo "URL:      https://arturo-lang.io/${{ inputs.channel }}"
                 echo "======================================"

@@ -13,7 +13,7 @@ set -e
 # CONSTANTS
 ################################################
 
-BASE_URL="http://188.245.97.105"
+BASE_URL="https://arturo-lang.io"
 INSTALL_DIR="$HOME/.arturo"
 BIN_DIR="$INSTALL_DIR/bin"
 TMP_DIR=""
