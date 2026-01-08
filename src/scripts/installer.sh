@@ -2,7 +2,7 @@
 ######################################################
 # Arturo
 # Programming Language + Bytecode VM compiler
-# (c) 2019-2025 Yanis Zafirópulos
+# (c) 2019-2026 Yanis Zafirópulos
 #
 # @file: installer.sh
 ######################################################
@@ -104,7 +104,7 @@ show_header() {
     println "   / _\` | '__| __| | | | '__/ _ \\\\ "
     println "  | (_| | |  | |_| |_| | | | (_) | "
     println "   \\\\__,_|_|   \\\\__|\\\\__,_|_|  \\\\___/  ${CLEAR}"
-    println "   (c)2019-2025 Yanis Zafirópulos"
+    println "   (c)2019-2026 Yanis Zafirópulos"
     println "${CYAN}"
     println "======================================================="
     println " ► Installer"
