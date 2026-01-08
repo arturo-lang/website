@@ -14,7 +14,7 @@
 }
 
 // Show mobile search icon only on mobile (below laptop breakpoint)
-@media screen and (max-width: 1023px) {
+@media screen and (max-width: 768px) {
     .mobile-search-trigger {
         display: flex;
     }
