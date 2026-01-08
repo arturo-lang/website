@@ -56,7 +56,17 @@
     window.initDocSearch = function(showInModal) {
         basePath = '/%<[basePath]>%';
         useModal = showInModal || false;
-        initSearch();
+        initSearch().then(() => {
+            // parse URL for search query
+            const urlParams = new URLSearchParams(window.location.search);
+            const searchQuery = urlParams.get('search');
+            
+            if (searchQuery && searchInput) {
+                searchInput.value = searchQuery;
+                searchInput.focus();
+                performSearch(searchQuery);
+            }
+        });
         
         if (useModal) {
             setupModalEventListeners();
