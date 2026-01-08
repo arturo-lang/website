@@ -99,8 +99,10 @@
             });
             
             console.log('Search initialized with', searchData.length, 'entries');
+            return Promise.resolve();
         } catch (error) {
             console.error('Failed to load search data:', error);
+            return Promise.reject(error);
         }
     }
 
