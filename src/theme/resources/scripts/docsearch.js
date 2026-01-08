@@ -61,10 +61,23 @@
             const urlParams = new URLSearchParams(window.location.search);
             const searchQuery = urlParams.get('search');
             
-            if (searchQuery && searchInput) {
-                searchInput.value = searchQuery;
-                searchInput.focus();
-                performSearch(searchQuery);
+            if (searchQuery) {
+                // Check if mobile mode
+                const isMobile = window.innerWidth <= 768;
+                
+                if (isMobile && mobileSearchInput) {
+                    // Mobile
+                    openMobileSearch();
+                    setTimeout(() => {
+                        mobileSearchInput.value = searchQuery;
+                        performMobileSearch(searchQuery);
+                    }, 150);
+                } else if (searchInput) {
+                    // Desktop
+                    searchInput.value = searchQuery;
+                    searchInput.focus();
+                    performSearch(searchQuery);
+                }
             }
         });
         
