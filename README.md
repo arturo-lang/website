@@ -73,7 +73,7 @@ src/
 ```
 
 > [!NOTE] 
-> You may also notice a `/tools` subfolder, mostly contains helper script and the generator itself; messy as it is - I would strongly advise against touching (for now), for your own sanity! lol
+> You may also notice a `/tools` subfolder, which mostly contains helper scripts and the generator itself; messy as it is - I would strongly advise against touching (for now), for your own sanity! lol
 
 ## Contributing
 
