@@ -4,7 +4,7 @@
 // =============================================================================
 // Executes Arturo code in isolated jail, enforces rate limits
 
-header('Access-Control-Allow-Origin: http://188.245.97.105');
+header('Access-Control-Allow-Origin: https://arturo-lang.io');
 
 $rest_json = file_get_contents("php://input");
 $_POST = json_decode($rest_json, true);
