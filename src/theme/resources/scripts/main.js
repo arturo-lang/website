@@ -437,9 +437,13 @@ document.addEventListener('DOMContentLoaded', () => {
 			}
 		});
 
-        ajaxGet("https://api.github.com/search/repositories?q=arturo-lang/arturo", function (data){
-            var parsed = JSON.parse(data);
-            setDiv("stargazers",parsed.items[0].stargazers_count);
-        });
+        ajaxGet("https://api.github.com/search/repositories?q=arturo-lang/arturo", function(data) {
+			var div = "stargazers";
+			var element = document.getElementById(div);
+			if (element) {
+				var parsedData = JSON.parse(data);
+				element.innerHTML = parsedData.items[0].stargazers_count;
+			}
+		});
     }
 });
