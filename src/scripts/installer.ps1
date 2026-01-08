@@ -1,7 +1,7 @@
 ######################################################
 # Arturo
 # Programming Language + Bytecode VM compiler
-# (c) 2019-2025 Yanis Zafirópulos
+# (c) 2019-2026 Yanis Zafirópulos
 #
 # @file: installer.ps1
 ######################################################
@@ -12,7 +12,7 @@ $ErrorActionPreference = "Stop"
 # CONSTANTS
 ################################################
 
-$BASE_URL = "http://188.245.97.105"
+$BASE_URL = "https://arturo-lang.io"
 $INSTALL_DIR = "$env:USERPROFILE\.arturo"
 $BIN_DIR = "$INSTALL_DIR\bin"
 $TMP_DIR = ""
@@ -110,7 +110,7 @@ function Show-Header {
     Write-ColorLine "   / _`` | '__| __| | | | '__/ _ \  " "Green"
     Write-ColorLine "  | (_| | |  | |_| |_| | | | (_) | " "Green"
     Write-ColorLine "   \__,_|_|   \__|\__,_|_|  \___/  " "Green"
-    Write-ColorLine "   (c)2019-2025 Yanis Zafiropulos" "Green"
+    Write-ColorLine "   (c)2019-2026 Yanis Zafiropulos" "Green"
     Write-ColorLine " " "Cyan"
     Write-ColorLine "=======================================================" "Cyan"
     Write-ColorLine " > Installer" "Cyan"

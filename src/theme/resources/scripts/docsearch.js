@@ -56,7 +56,30 @@
     window.initDocSearch = function(showInModal) {
         basePath = '/%<[basePath]>%';
         useModal = showInModal || false;
-        initSearch();
+        initSearch().then(() => {
+            // parse URL for search query
+            const urlParams = new URLSearchParams(window.location.search);
+            const searchQuery = urlParams.get('search');
+            
+            if (searchQuery) {
+                // Check if mobile mode
+                const isMobile = window.innerWidth <= 768;
+                
+                if (isMobile && mobileSearchInput) {
+                    // Mobile
+                    openMobileSearch();
+                    setTimeout(() => {
+                        mobileSearchInput.value = searchQuery;
+                        performMobileSearch(searchQuery);
+                    }, 150);
+                } else if (searchInput) {
+                    // Desktop
+                    searchInput.value = searchQuery;
+                    searchInput.focus();
+                    performSearch(searchQuery);
+                }
+            }
+        });
         
         if (useModal) {
             setupModalEventListeners();
@@ -89,8 +112,10 @@
             });
             
             console.log('Search initialized with', searchData.length, 'entries');
+            return Promise.resolve();
         } catch (error) {
             console.error('Failed to load search data:', error);
+            return Promise.reject(error);
         }
     }
 
