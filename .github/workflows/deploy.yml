@@ -40,11 +40,18 @@ jobs:
                 packages: build-essential libcmocka-dev webp pandoc libgtk-3-dev libmpfr-dev libwebkit2gtk-4.1-dev
                 version: 1.0
 
-            - name: "Install TeX Live"
-              run: |
-                sudo apt-get update
-                sudo apt-get install -y texlive-latex-base texlive-fonts-recommended texlive-extra-utils texlive-latex-extra
-
+            - name: Install TeX Live
+              uses: zauguin/install-texlive@v4
+              with:
+                packages: >
+                  scheme-basic
+                  latex
+                  latex-bin
+                  latexmk
+                  amsmath
+                  amsfonts
+                  collection-fontsrecommended
+                  
             - name: "Install npm dependencies"
               run: |
                 sudo npm install -g sass uglify-js
