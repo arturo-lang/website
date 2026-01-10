@@ -1,23 +1,21 @@
-name: Deploy Website
-
 on:
     workflow_call: &workflow_config
         inputs:
             channel:
-                description: 'Channel: latest (nightly), stable (release), or current (from run)'
+                description: 'Channel: latest (nightly) or stable (release)'
                 required: true
                 type: string
-            tag:
-                description: 'Custom version tag (only for current channel, defaults to commit SHA)'
+            test:
+                description: 'Deploy to test folder instead of channel/version folder'
                 required: false
-                type: string
+                type: boolean
+                default: false
 
     workflow_dispatch: *workflow_config
-
+ 
 jobs:
-    Deploy:
+    Deployment:
         runs-on: ubuntu-latest
-        name: Generate Documentation & Deploy
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
@@ -36,18 +34,26 @@ jobs:
                 ruby-version: 3.3
                 bundler-cache: true
 
-            - name: "Install build dependencies"
+            - name: Cache apt packages
+              uses: awalsh128/cache-apt-pkgs-action@latest
+              with:
+                packages: build-essential libcmocka-dev webp pandoc libgtk-3-dev libmpfr-dev libwebkit2gtk-4.1-dev
+                version: 1.0
+ 
+            - name: Install TeX Live
+              uses: zauguin/install-texlive@v4
+              with:
+                packages: >
+                  scheme-basic
+                  collection-latex
+                  collection-fontsrecommended
+                  collection-latexextra
+
+            - name: "Install npm dependencies"
               run: |
-                sudo apt-get update
-                sudo apt-get install -y build-essential libcmocka-dev webp \
-                                        pandoc texlive-latex-base texlive-fonts-recommended \
-                                        texlive-extra-utils texlive-latex-extra \
-                                        libgtk-3-dev libmpfr-dev libwebkit2gtk-4.1-dev
-                
                 sudo npm install -g sass uglify-js
 
             - name: Download binaries from release
-              if: inputs.channel != 'current'
               id: download
               run: |
                 mkdir -p files
@@ -100,29 +106,21 @@ jobs:
                 echo "Detected version: $VERSION"
               shell: bash
 
-            - name: Download artifacts from workflow run
-              if: inputs.channel == 'current'
-              uses: dawidd6/action-download-artifact@v11
-              with:
-                github_token: ${{ secrets.GITHUB_TOKEN }}
-                run_id: ${{ github.run_id }}
-                path: ./files
-                skip_unpack: true
-
-            - name: Set version tag
-              id: version
+            - name: Determine deployment path
+              id: deploy
               run: |
-                if [ "${{ inputs.channel }}" = "current" ]; then
-                    if [ -n "${{ inputs.tag }}" ]; then
-                        VERSION="${{ inputs.tag }}"
-                    else
-                        VERSION="current.$(git rev-parse --short HEAD)"
-                    fi
+                if [ "${{ inputs.test }}" = "true" ]; then
+                    DEPLOY_PATH="test"
+                    echo "🧪 Deploying to test folder"
+                elif [ "${{ inputs.channel }}" = "stable" ]; then
+                    DEPLOY_PATH="${{ steps.download.outputs.version_tag }}"
+                    echo "📦 Deploying to version folder: $DEPLOY_PATH"
                 else
-                    VERSION="${{ steps.download.outputs.version_tag }}"
+                    DEPLOY_PATH="${{ inputs.channel }}"
+                    echo "📦 Deploying to channel folder: $DEPLOY_PATH"
                 fi
-                echo "tag=$VERSION" >> $GITHUB_OUTPUT
-                echo "🏷️  Version tag: $VERSION"
+                echo "path=$DEPLOY_PATH" >> $GITHUB_OUTPUT
+                echo "Deployment path: /usr/local/www/arturo/main/versions/$DEPLOY_PATH"
               shell: bash
 
             - name: Setup Arturo
@@ -154,7 +152,7 @@ jobs:
 
             - name: "Generate website"
               env:
-                VERSION_TAG: ${{ steps.version.outputs.tag }}
+                VERSION_TAG: ${{ steps.download.outputs.version_tag }}
                 CHANNEL: ${{ inputs.channel }}
               run: |
                 arturo tools/binarygen.art "$VERSION_TAG" "$CHANNEL"
@@ -180,7 +178,7 @@ jobs:
                 mkdir -p tmpdocs/files
                 echo "Copying binaries..."
                 cp files/*.zip tmpdocs/files/
-                echo "${{ steps.version.outputs.tag }}" > tmpdocs/files/VERSION
+                echo "${{ steps.download.outputs.version_tag }}" > tmpdocs/files/VERSION
                 echo "✅ Binaries in tmpdocs:"
                 ls -lh tmpdocs/files/
                 
@@ -189,19 +187,19 @@ jobs:
               with:
                 switches: -avzr --delete
                 path: tmpdocs/
-                remote_path: /usr/local/www/arturo/main/versions/${{ inputs.channel }}
-                remote_host: 188.245.97.105 
+                remote_path: /usr/local/www/arturo/main/versions/${{ steps.deploy.outputs.path }}
+                remote_host: arturo-lang.io
                 remote_user: web
                 remote_key: ${{ secrets.FREEBSD_DEPLOYMENT }}
 
             - name: Extract and move FreeBSD binary
               uses: appleboy/ssh-action@v1.2.0
               with:
-                host: 188.245.97.105
+                host: arturo-lang.io
                 username: web
                 key: ${{ secrets.FREEBSD_DEPLOYMENT }}
                 script: |
-                  cd /usr/local/www/arturo/main/versions/${{ inputs.channel }}
+                  cd /usr/local/www/arturo/main/versions/${{ steps.deploy.outputs.path }}
                 
                   # Download examples
                   mkdir -p examples
@@ -213,20 +211,21 @@ jobs:
                   mkdir -p bin
                   mv arturo bin/
                   chmod +x scripts/setup_runner.sh
-                  sudo /usr/local/sbin/arturo_setup_runner ${{ inputs.channel }}
+                  sudo /usr/local/sbin/arturo_setup_runner ${{ steps.deploy.outputs.path }}
 
             - name: Upload complete website artifact
               uses: 'actions/upload-artifact@v4'
               with:
-                name: website-${{ inputs.channel }}-${{ steps.version.outputs.tag }}
+                name: website-${{ inputs.channel }}-${{ steps.download.outputs.version_tag }}
                 path: tmpdocs
 
             - name: Display completion summary
               run: |
-                echo "🎉 Website Deployment Complete!"
-                echo "======================================"
-                echo "Channel:  ${{ inputs.channel }}"
-                echo "Version:  ${{ steps.version.outputs.tag }}"
-                echo "Binaries: $(ls files/*.zip | wc -l) files"
-                echo "URL:      https://arturo-lang.io/${{ inputs.channel }}"
-                echo "======================================"
+                echo " 🎉 Website Deployment Complete!"
+                echo "=========================================================================="
+                echo " Channel:      ${{ inputs.channel }}"
+                echo " Version:      ${{ steps.download.outputs.version_tag }}"
+                echo " Path:         /usr/local/www/arturo/main/versions/${{ steps.deploy.outputs.path }}"
+                echo " Test:         ${{ inputs.test }}"
+                echo " Binaries:     $(ls files/*.zip | wc -l) files"
+                echo "=========================================================================="

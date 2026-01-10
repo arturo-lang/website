@@ -1,0 +1,16 @@
+name: Test
+
+on:
+    pull_request:
+ 
+concurrency: 
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    Website:
+        uses: ./.github/workflows/deploy.yml
+        secrets: inherit
+        with:
+            channel: 'latest'
+            test: true

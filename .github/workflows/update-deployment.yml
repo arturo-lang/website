@@ -1,7 +1,9 @@
 name: Update
 
 on:
-    pull_request:
+    push:
+        branches:
+            - main
     workflow_dispatch:
  
 concurrency: 
@@ -9,7 +11,7 @@ concurrency:
     cancel-in-progress: true
 
 jobs:
-    Deploy:
+    Website:
         uses: ./.github/workflows/deploy.yml
         secrets: inherit
         with:
