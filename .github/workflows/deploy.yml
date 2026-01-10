@@ -39,7 +39,7 @@ jobs:
               with:
                 packages: build-essential libcmocka-dev webp pandoc libgtk-3-dev libmpfr-dev libwebkit2gtk-4.1-dev
                 version: 1.0
-
+ 
             - name: Install TeX Live
               uses: zauguin/install-texlive@v4
               with:
