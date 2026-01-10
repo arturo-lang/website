@@ -190,14 +190,14 @@ jobs:
                 switches: -avzr --delete
                 path: tmpdocs/
                 remote_path: /usr/local/www/arturo/main/versions/${{ inputs.channel }}
-                remote_host: 188.245.97.105 
+                remote_host: arturo-lang.io 
                 remote_user: web
                 remote_key: ${{ secrets.FREEBSD_DEPLOYMENT }}
 
             - name: Extract and move FreeBSD binary
               uses: appleboy/ssh-action@v1.2.0
               with:
-                host: 188.245.97.105
+                host: arturo-lang.io
                 username: web
                 key: ${{ secrets.FREEBSD_DEPLOYMENT }}
                 script: |
