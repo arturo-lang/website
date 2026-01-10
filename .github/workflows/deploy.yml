@@ -4,12 +4,8 @@ on:
     workflow_call: &workflow_config
         inputs:
             channel:
-                description: 'Channel: latest (nightly), stable (release), or current (from run)'
+                description: 'Channel: latest (nightly) or stable (release)'
                 required: true
-                type: string
-            tag:
-                description: 'Custom version tag (only for current channel, defaults to commit SHA)'
-                required: false
                 type: string
 
     workflow_dispatch: *workflow_config
@@ -47,7 +43,6 @@ jobs:
                 sudo npm install -g sass uglify-js
 
             - name: Download binaries from release
-              if: inputs.channel != 'current'
               id: download
               run: |
                 mkdir -p files
@@ -100,27 +95,10 @@ jobs:
                 echo "Detected version: $VERSION"
               shell: bash
 
-            - name: Download artifacts from workflow run
-              if: inputs.channel == 'current'
-              uses: dawidd6/action-download-artifact@v11
-              with:
-                github_token: ${{ secrets.GITHUB_TOKEN }}
-                run_id: ${{ github.run_id }}
-                path: ./files
-                skip_unpack: true
-
             - name: Set version tag
               id: version
               run: |
-                if [ "${{ inputs.channel }}" = "current" ]; then
-                    if [ -n "${{ inputs.tag }}" ]; then
-                        VERSION="${{ inputs.tag }}"
-                    else
-                        VERSION="current.$(git rev-parse --short HEAD)"
-                    fi
-                else
-                    VERSION="${{ steps.download.outputs.version_tag }}"
-                fi
+                VERSION="${{ steps.download.outputs.version_tag }}"
                 echo "tag=$VERSION" >> $GITHUB_OUTPUT
                 echo "🏷️  Version tag: $VERSION"
               shell: bash
@@ -190,7 +168,7 @@ jobs:
                 switches: -avzr --delete
                 path: tmpdocs/
                 remote_path: /usr/local/www/arturo/main/versions/${{ inputs.channel }}
-                remote_host: arturo-lang.io 
+                remote_host: arturo-lang.io
                 remote_user: web
                 remote_key: ${{ secrets.FREEBSD_DEPLOYMENT }}
 
