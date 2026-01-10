@@ -39,21 +39,36 @@ jobs:
 
             - name: Cache apt packages
               uses: actions/cache@v4
+              id: apt-cache
               with:
-                path: |
-                  /var/cache/apt/archives
-                  /var/lib/apt/lists
-                key: ${{ runner.os }}-apt-${{ hashFiles('.github/workflows/deploy.yml') }}
+                path: ~/apt-cache
+                key: ${{ runner.os }}-apt-${{ hashFiles('.github/workflows/deploy-website.yml') }}
                 restore-keys: |
                   ${{ runner.os }}-apt-
 
             - name: "Install build dependencies"
               run: |
+                # Create cache directory
+                mkdir -p ~/apt-cache
+                
+                # Download packages to cache if not cached
+                if [ "${{ steps.apt-cache.outputs.cache-hit }}" != "true" ]; then
+                  sudo apt-get update
+                  sudo apt-get install -y --download-only -o Dir::Cache::Archives="$HOME/apt-cache" \
+                    build-essential libcmocka-dev webp \
+                    pandoc texlive-latex-base texlive-fonts-recommended \
+                    texlive-extra-utils texlive-latex-extra \
+                    libgtk-3-dev libmpfr-dev libwebkit2gtk-4.1-dev
+                fi
+                
+                # Install from cache
                 sudo apt-get update
-                sudo apt-get install -y build-essential libcmocka-dev webp \
-                                        pandoc texlive-latex-base texlive-fonts-recommended \
-                                        texlive-extra-utils texlive-latex-extra \
-                                        libgtk-3-dev libmpfr-dev libwebkit2gtk-4.1-dev
+                sudo dpkg -i ~/apt-cache/*.deb 2>/dev/null || true
+                sudo apt-get install -y -f \
+                  build-essential libcmocka-dev webp \
+                  pandoc texlive-latex-base texlive-fonts-recommended \
+                  texlive-extra-utils texlive-latex-extra \
+                  libgtk-3-dev libmpfr-dev libwebkit2gtk-4.1-dev
                 
                 sudo npm install -g sass uglify-js
 
