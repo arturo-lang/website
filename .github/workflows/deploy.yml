@@ -14,9 +14,8 @@ on:
     workflow_dispatch: *workflow_config
  
 jobs:
-    Deploy:
+    Deployment:
         runs-on: ubuntu-latest
-        name: Website
         steps:
             - name: Checkout code
               uses: actions/checkout@v4

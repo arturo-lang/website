@@ -8,7 +8,7 @@ concurrency:
     cancel-in-progress: true
 
 jobs:
-    Deployment:
+    Website:
         uses: ./.github/workflows/deploy.yml
         secrets: inherit
         with:
