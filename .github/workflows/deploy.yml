@@ -7,6 +7,11 @@ on:
                 description: 'Channel: latest (nightly) or stable (release)'
                 required: true
                 type: string
+            test:
+                description: 'Deploy to test folder instead of channel/version folder'
+                required: false
+                type: boolean
+                default: false
 
     workflow_dispatch: *workflow_config
  
@@ -95,6 +100,23 @@ jobs:
                 echo "Detected version: $VERSION"
               shell: bash
 
+            - name: Determine deployment path
+              id: deploy
+              run: |
+                if [ "${{ inputs.test }}" = "true" ]; then
+                    DEPLOY_PATH="test"
+                    echo "🧪 Deploying to test folder"
+                elif [ "${{ inputs.channel }}" = "stable" ]; then
+                    DEPLOY_PATH="${{ steps.download.outputs.version_tag }}"
+                    echo "📦 Deploying to version folder: $DEPLOY_PATH"
+                else
+                    DEPLOY_PATH="${{ inputs.channel }}"
+                    echo "📦 Deploying to channel folder: $DEPLOY_PATH"
+                fi
+                echo "path=$DEPLOY_PATH" >> $GITHUB_OUTPUT
+                echo "Deployment path: /usr/local/www/arturo/main/versions/$DEPLOY_PATH"
+              shell: bash
+
             - name: Setup Arturo
               run: |
                 # Find and extract Linux AMD64 artifact
@@ -159,7 +181,7 @@ jobs:
               with:
                 switches: -avzr --delete
                 path: tmpdocs/
-                remote_path: /usr/local/www/arturo/main/versions/${{ inputs.channel == 'stable' && steps.download.outputs.version_tag || inputs.channel }}
+                remote_path: /usr/local/www/arturo/main/versions/${{ steps.deploy.outputs.path }}
                 remote_host: arturo-lang.io
                 remote_user: web
                 remote_key: ${{ secrets.FREEBSD_DEPLOYMENT }}
@@ -171,7 +193,7 @@ jobs:
                 username: web
                 key: ${{ secrets.FREEBSD_DEPLOYMENT }}
                 script: |
-                  cd /usr/local/www/arturo/main/versions/${{ inputs.channel == 'stable' && steps.download.outputs.version_tag || inputs.channel }}
+                  cd /usr/local/www/arturo/main/versions/${{ steps.deploy.outputs.path }}
                 
                   # Download examples
                   mkdir -p examples
@@ -183,7 +205,7 @@ jobs:
                   mkdir -p bin
                   mv arturo bin/
                   chmod +x scripts/setup_runner.sh
-                  sudo /usr/local/sbin/arturo_setup_runner ${{ inputs.channel == 'stable' && steps.download.outputs.version_tag || inputs.channel }}
+                  sudo /usr/local/sbin/arturo_setup_runner ${{ steps.deploy.outputs.path }}
 
             - name: Upload complete website artifact
               uses: 'actions/upload-artifact@v4'
@@ -197,6 +219,8 @@ jobs:
                 echo "======================================"
                 echo "Channel:  ${{ inputs.channel }}"
                 echo "Version:  ${{ steps.download.outputs.version_tag }}"
+                echo "Deploy:   ${{ steps.deploy.outputs.path }}"
+                echo "Test:     ${{ inputs.test }}"
                 echo "Binaries: $(ls files/*.zip | wc -l) files"
-                echo "URL:      https://arturo-lang.io/${{ inputs.channel }}"
+                echo "URL:      https://arturo-lang.io/${{ steps.deploy.outputs.path }}"
                 echo "======================================"
