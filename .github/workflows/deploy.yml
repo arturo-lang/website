@@ -45,13 +45,10 @@ jobs:
               with:
                 packages: >
                   scheme-basic
-                  latex
-                  latex-bin
-                  latexmk
-                  amsmath
-                  amsfonts
+                  collection-latex
                   collection-fontsrecommended
-                  
+                  collection-latexextra
+
             - name: "Install npm dependencies"
               run: |
                 sudo npm install -g sass uglify-js
