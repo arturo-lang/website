@@ -213,12 +213,11 @@ jobs:
 
             - name: Display completion summary
               run: |
-                echo "🎉 Website Deployment Complete!"
-                echo "======================================"
-                echo "Channel:  ${{ inputs.channel }}"
-                echo "Version:  ${{ steps.download.outputs.version_tag }}"
-                echo "Path:     /usr/local/www/arturo/main/versions/${{ steps.deploy.outputs.path }}"
-                echo "Test:     ${{ inputs.test }}"
-                echo "Binaries: $(ls files/*.zip | wc -l) files"
-                echo "URL:      https://arturo-lang.io/${{ steps.deploy.outputs.path }}"
-                echo "======================================"
+                echo " 🎉 Website Deployment Complete!"
+                echo "=========================================================================="
+                echo " Channel:      ${{ inputs.channel }}"
+                echo " Version:      ${{ steps.download.outputs.version_tag }}"
+                echo " Path:         /usr/local/www/arturo/main/versions/${{ steps.deploy.outputs.path }}"
+                echo " Test:         ${{ inputs.test }}"
+                echo " Binaries:     $(ls files/*.zip | wc -l) files"
+                echo "=========================================================================="
