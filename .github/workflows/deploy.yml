@@ -37,13 +37,14 @@ jobs:
             - name: Cache apt packages
               uses: awalsh128/cache-apt-pkgs-action@latest
               with:
-                packages: build-essential libcmocka-dev webp pandoc texlive-latex-base texlive-fonts-recommended texlive-extra-utils texlive-latex-extra libgtk-3-dev libmpfr-dev libwebkit2gtk-4.1-dev
+                packages: build-essential libcmocka-dev webp pandoc libgtk-3-dev libmpfr-dev libwebkit2gtk-4.1-dev
                 version: 1.0
 
-            - name: Sanitize LaTeX installation
+            - name: "Install TeX Live"
               run: |
-                sudo fmtutil-sys --all
-   
+                sudo apt-get update
+                sudo apt-get install -y texlive-latex-base texlive-fonts-recommended texlive-extra-utils texlive-latex-extra
+ 
             - name: "Install npm dependencies"
               run: |
                 sudo npm install -g sass uglify-js
