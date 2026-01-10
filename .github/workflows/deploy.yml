@@ -43,7 +43,7 @@ jobs:
             - name: Sanitize LaTeX installation
               run: |
                 sudo fmtutil-sys --all
-  
+   
             - name: "Install npm dependencies"
               run: |
                 sudo npm install -g sass uglify-js
