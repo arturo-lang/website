@@ -33,10 +33,10 @@ params: #[
 ]
 
 loop changes [file, replacements][
-    print ["Processing:" file]
+    ;print ["Processing:" file]
     content: << file
     loop replacements 'rep [
-        print ["- replacing:" rep]
+        ;print ["- replacing:" rep]
         content: replace content "%<[" ++ (to :string rep) ++ "]>%"
                                  params\[rep]
     ]

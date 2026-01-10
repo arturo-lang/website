@@ -18,14 +18,14 @@ binaries: #[]
 
 ; Process all binary zip files
 loop sort list "files" 'filename [
-    print ["Processing file:" filename]
+    ;print ["Processing file:" filename]
     if suffix? filename ".zip" [
         artifactName: extract.filename filename
         
         ; Only process arturo-* files
         if and? prefix? artifactName "arturo-"
                 not? contains? artifactName "-src" [
-            print ["Processing:" artifactName]
+            ;print ["Processing:" artifactName]
             
             ; Get size
             lsOutput: execute ~"ls -lh |filename|"
@@ -48,7 +48,7 @@ loop sort list "files" 'filename [
             ; Check for mode/legacy in remaining parts
             if 2 < size parts [
                 thirdPart: get parts 2
-                inspect thirdPart
+                ;inspect thirdPart
                 switch contains? ["mini" "safe"] thirdPart [
                     mode: thirdPart
                     if 3 < size parts [
@@ -95,7 +95,7 @@ loop sort list "files" 'filename [
                 binaries\[os]\arch\[arch]\[mode]: entry
             ]
             
-            print ["Added:" ~"|artifactName|.zip" ~"(|fileSize|)"]
+            ;print ["Added:" ~"|artifactName|.zip" ~"(|fileSize|)"]
         ]
     ]
 ]
@@ -123,8 +123,8 @@ write newGettingStarted "src/pages/documentation/getting started.art"
 
 ; inspect sort # to :block output
 
-print "\nGenerated _index.art:"
-print read "src/pages/_index.art"
+;print "\nGenerated _index.art:"
+;print read "src/pages/_index.art"
 
 
 [versionPart,buildPart]: split.by:"+" to :string sys\version
