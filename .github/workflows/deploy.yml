@@ -39,6 +39,10 @@ jobs:
               with:
                 packages: build-essential libcmocka-dev webp pandoc texlive-latex-base texlive-fonts-recommended texlive-extra-utils texlive-latex-extra libgtk-3-dev libmpfr-dev libwebkit2gtk-4.1-dev
                 version: 1.0
+
+            - name: Sanitize LaTeX installation
+              run: |
+                sudo fmtutil-sys --all
  
             - name: "Install npm dependencies"
               run: |
