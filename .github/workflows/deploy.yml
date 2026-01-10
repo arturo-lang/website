@@ -159,7 +159,7 @@ jobs:
               with:
                 switches: -avzr --delete
                 path: tmpdocs/
-                remote_path: /usr/local/www/arturo/main/versions/${{ inputs.channel }}
+                remote_path: /usr/local/www/arturo/main/versions/${{ inputs.channel == 'stable' && steps.download.outputs.version_tag || inputs.channel }}
                 remote_host: arturo-lang.io
                 remote_user: web
                 remote_key: ${{ secrets.FREEBSD_DEPLOYMENT }}
@@ -171,7 +171,7 @@ jobs:
                 username: web
                 key: ${{ secrets.FREEBSD_DEPLOYMENT }}
                 script: |
-                  cd /usr/local/www/arturo/main/versions/${{ inputs.channel }}
+                  cd /usr/local/www/arturo/main/versions/${{ inputs.channel == 'stable' && steps.download.outputs.version_tag || inputs.channel }}
                 
                   # Download examples
                   mkdir -p examples
@@ -183,7 +183,7 @@ jobs:
                   mkdir -p bin
                   mv arturo bin/
                   chmod +x scripts/setup_runner.sh
-                  sudo /usr/local/sbin/arturo_setup_runner ${{ inputs.channel }}
+                  sudo /usr/local/sbin/arturo_setup_runner ${{ inputs.channel == 'stable' && steps.download.outputs.version_tag || inputs.channel }}
 
             - name: Upload complete website artifact
               uses: 'actions/upload-artifact@v4'
