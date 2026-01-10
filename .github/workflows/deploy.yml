@@ -95,14 +95,6 @@ jobs:
                 echo "Detected version: $VERSION"
               shell: bash
 
-            - name: Set version tag
-              id: version
-              run: |
-                VERSION="${{ steps.download.outputs.version_tag }}"
-                echo "tag=$VERSION" >> $GITHUB_OUTPUT
-                echo "🏷️  Version tag: $VERSION"
-              shell: bash
-
             - name: Setup Arturo
               run: |
                 # Find and extract Linux AMD64 artifact
@@ -132,7 +124,7 @@ jobs:
 
             - name: "Generate website"
               env:
-                VERSION_TAG: ${{ steps.version.outputs.tag }}
+                VERSION_TAG: ${{ steps.download.outputs.version_tag }}
                 CHANNEL: ${{ inputs.channel }}
               run: |
                 arturo tools/binarygen.art "$VERSION_TAG" "$CHANNEL"
@@ -158,7 +150,7 @@ jobs:
                 mkdir -p tmpdocs/files
                 echo "Copying binaries..."
                 cp files/*.zip tmpdocs/files/
-                echo "${{ steps.version.outputs.tag }}" > tmpdocs/files/VERSION
+                echo "${{ steps.download.outputs.version_tag }}" > tmpdocs/files/VERSION
                 echo "✅ Binaries in tmpdocs:"
                 ls -lh tmpdocs/files/
                 
@@ -196,7 +188,7 @@ jobs:
             - name: Upload complete website artifact
               uses: 'actions/upload-artifact@v4'
               with:
-                name: website-${{ inputs.channel }}-${{ steps.version.outputs.tag }}
+                name: website-${{ inputs.channel }}-${{ steps.download.outputs.version_tag }}
                 path: tmpdocs
 
             - name: Display completion summary
@@ -204,7 +196,7 @@ jobs:
                 echo "🎉 Website Deployment Complete!"
                 echo "======================================"
                 echo "Channel:  ${{ inputs.channel }}"
-                echo "Version:  ${{ steps.version.outputs.tag }}"
+                echo "Version:  ${{ steps.download.outputs.version_tag }}"
                 echo "Binaries: $(ls files/*.zip | wc -l) files"
                 echo "URL:      https://arturo-lang.io/${{ inputs.channel }}"
                 echo "======================================"
