@@ -1,5 +1,3 @@
-name: Deploy Website
-
 on:
     workflow_call: &workflow_config
         inputs:
@@ -18,7 +16,7 @@ on:
 jobs:
     Deploy:
         runs-on: ubuntu-latest
-        name: Generate Documentation & Deploy
+        name: Website
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
@@ -219,7 +217,7 @@ jobs:
                 echo "======================================"
                 echo "Channel:  ${{ inputs.channel }}"
                 echo "Version:  ${{ steps.download.outputs.version_tag }}"
-                echo "Deploy:   ${{ steps.deploy.outputs.path }}"
+                echo "Path:     /usr/local/www/arturo/main/versions/${{ steps.deploy.outputs.path }}"
                 echo "Test:     ${{ inputs.test }}"
                 echo "Binaries: $(ls files/*.zip | wc -l) files"
                 echo "URL:      https://arturo-lang.io/${{ steps.deploy.outputs.path }}"
