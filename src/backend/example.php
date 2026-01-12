@@ -28,7 +28,7 @@ $txt = "";
 if (file_exists($example_file)) {
     $txt = file_get_contents($example_file);
 } else {
-    $txt = "# Example not found: " . htmlspecialchars($example_name);
+    $txt = "# Example not found: " . $example_name;
 }
 
 echo json_encode(["text" => $txt]);
