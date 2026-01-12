@@ -12,23 +12,38 @@ if (!is_array($_POST)) {
 
 $example_name = $_POST['i'] ?? '';
 
-// SECURITY: Prevent path traversal attacks
-if (preg_match('/[^a-zA-Z0-9_\-\' +^%]/', $example_name)) {
+if (empty($example_name)) {
+    echo json_encode(["text" => "# No example name provided"]);
+    exit;
+}
+
+// SECURITY: Use basename to prevent path traversal
+// This removes any directory components (../, /, etc.)
+$example_name = basename($example_name);
+
+// Additional safety: ensure we're not trying to traverse up
+if ($example_name === '.' || $example_name === '..' || empty($example_name)) {
     echo json_encode(["text" => "# Invalid example name"]);
     exit;
 }
 
-// Use basename as additional safety layer
-$example_name = basename($example_name);
-
 // Construct the file path
 $example_file = __DIR__ . '/../examples/src/rosetta/' . $example_name . '.art';
+
+// Verify the resolved path is within our examples directory
+$examples_dir = realpath(__DIR__ . '/../examples/src/rosetta');
+$resolved_path = realpath(dirname($example_file));
+
+if ($resolved_path === false || strpos($resolved_path, $examples_dir) !== 0) {
+    echo json_encode(["text" => "# Invalid example path"]);
+    exit;
+}
 
 $txt = "";
 if (file_exists($example_file)) {
     $txt = file_get_contents($example_file);
 } else {
-    $txt = "# Example not found: " . $example_name;
+    $txt = "# Example not found: " . htmlspecialchars(urldecode($example_name));
 }
 
 echo json_encode(["text" => $txt]);
