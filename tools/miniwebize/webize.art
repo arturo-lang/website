@@ -103,7 +103,6 @@ InfoPadding: 13
 ;--------------------------
 
 getWebsiteData: function [what][
-    inspect Data\setup
     return Data\setup\[what]
 ]
 
@@ -114,6 +113,8 @@ getRootPath: function [][
 
     if getWebsiteData 'test? ->
         rootPath: "/test/"
+
+    return rootPath
 ]
 
 linkTo: function [location][
