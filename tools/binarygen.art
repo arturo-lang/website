@@ -106,6 +106,7 @@ sortedBinaries: #.raw flatten arrange binaries [pfm,v][ index values platforms p
 ; Get version and build date from environment
 version: arg\0
 versionAlias: arg\1
+isTestBuild?: arg\2 = "true"
 buildDate: strip execute ~"date -u '+%Y-%m-%d %H:%M:%S UTC'"
 
 ; Generate the _index.art file
@@ -134,6 +135,7 @@ Details: #[
     build: 0
     arch: ~"|sys\cpu\arch|/|sys\os|"
     branch: versionAlias
+    test?: isTestBuild?
 ]
 
 if or? [contains? buildPart "."][3 < to :integer buildPart][

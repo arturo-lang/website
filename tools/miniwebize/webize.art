@@ -102,6 +102,21 @@ InfoPadding: 13
 ; Helpers
 ;--------------------------
 
+getWebsiteData: function [what][
+    return Data\setup\[what]
+]
+
+getRootPath: function [][
+    rootPath: "/"
+    if "latest" = getWebsiteData 'branch ->
+        rootPath: "/latest/"
+
+    if getWebsiteData 'test? ->
+        rootPath: "/test/"
+
+    return rootPath
+]
+
 linkTo: function [location][
     i: 0 
     parts: location 
@@ -210,7 +225,7 @@ githubMarkdown: function [src][
     switch exists? "config.art" [
         Config: #"config.art" 
 
-        Data: #.data[]
+        Data: #[]
         loop list "data" 'f [
             if ".art" = extract.extension f ->
                 set Data (extract.basename f) -- extract.extension f do read f
