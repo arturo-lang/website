@@ -103,7 +103,7 @@ InfoPadding: 13
 ;--------------------------
 
 getWebsiteData: function [what][
-    return Data\[what]
+    return Data\setup\[what]
 ]
 
 getRootPath: function [][
