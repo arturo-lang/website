@@ -683,7 +683,7 @@ function filterExamples() {
     const search = document.getElementById('examples-search').value.toLowerCase();
     if (!window.examplesList) return;
     
-    const filtered = window.examplesList.filter(ex => ex.toLowerCase().includes(search));
+    const filtered = window.examplesList.filter(ex => decodeURIComponent(ex).toLowerCase().includes(search));
     displayExamples(filtered);
 }
 
