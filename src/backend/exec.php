@@ -135,9 +135,8 @@ chmod($run_script_dest, 0755);
 // =========================================================================
 
 if ($is_example) {
-    // SECURITY: Sanitize example name to prevent path traversal
-    // Only allow alphanumeric, dash, underscore, and spaces
-    if (preg_match('/[^a-zA-Z0-9_\-\' ]/', $example_name)) {
+    // SECURITY: Sanitize - allow URL-encoded chars
+    if (preg_match('/[^a-zA-Z0-9_\-\' %]/', $example_name)) {
         echo json_encode([
             "text" => "Error: Invalid example name",
             "code" => "",
