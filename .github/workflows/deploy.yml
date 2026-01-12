@@ -155,7 +155,7 @@ jobs:
                 VERSION_TAG: ${{ steps.download.outputs.version_tag }}
                 CHANNEL: ${{ inputs.channel }}
               run: |
-                arturo tools/binarygen.art "$VERSION_TAG" "$CHANNEL"
+                arturo tools/binarygen.art "$VERSION_TAG" "$CHANNEL" "${{ inputs.test }}"
                 arturo tools/sitegen.art
                 arturo tools/indexgen.art
                 arturo tools/preprocessjs.art "$CHANNEL"
