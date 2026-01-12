@@ -13,7 +13,7 @@ if (!is_array($_POST)) {
 $example_name = $_POST['i'] ?? '';
 
 // SECURITY: Prevent path traversal attacks
-if (preg_match('/[^a-zA-Z0-9_\-\' +^]/', $example_name)) {
+if (preg_match('/[^a-zA-Z0-9_\-\' +^%]/', $example_name)) {
     echo json_encode(["text" => "# Invalid example name"]);
     exit;
 }
