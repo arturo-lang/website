@@ -224,15 +224,15 @@ githubMarkdown: function [src][
     switch exists? "config.art" [
         Config: #"config.art" 
 
-        inspect list "."
+        inspect list "data"
         WebsiteData: #"data/setup.art"
 
-        Data: #.data[]
+        Data: #[]
         loop list "data" 'f [
             if ".art" = extract.extension f ->
                 set Data (extract.basename f) -- extract.extension f do read f
         ]
-        ;inspect Data
+        inspect Data
 
         ;-------------------------
         ; Render pages
