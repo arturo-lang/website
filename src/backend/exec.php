@@ -135,9 +135,21 @@ chmod($run_script_dest, 0755);
 // =========================================================================
 
 if ($is_example) {
-    // SECURITY: Sanitize example name to prevent path traversal
-    // Only allow alphanumeric, dash, underscore, and spaces
-    if (preg_match('/[^a-zA-Z0-9_\-\' ]/', $example_name)) {
+    if (empty($example_name)) {
+        echo json_encode([
+            "text" => "Error: No example name provided",
+            "code" => "",
+            "result" => -1
+        ]);
+        exec("sudo /sbin/zfs destroy zroot/jails/run/$jail_name 2>&1");
+        exit;
+    }
+    
+    // SECURITY: Use basename to prevent path traversal
+    $example_name = basename($example_name);
+    
+    // Additional safety: ensure we're not trying to traverse up
+    if ($example_name === '.' || $example_name === '..' || empty($example_name)) {
         echo json_encode([
             "text" => "Error: Invalid example name",
             "code" => "",
@@ -147,7 +159,7 @@ if ($is_example) {
         exit;
     }
     
-    $example_file = basename($example_name) . ".art";
+    $example_file = $example_name . ".art";
     $arturo_target = "examples/" . $example_file;
 } else {
     $code_file = $jail_path . "/tmp/main.art";

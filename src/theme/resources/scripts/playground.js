@@ -193,7 +193,7 @@ function execCode() {
         example: exampleName
     };
     
-    fetch("https://arturo-lang.io/%<[basePath]>%/backend/exec.php", {
+    fetch("https://arturo-lang.io/%<[basePath]>%backend/exec.php", {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -349,7 +349,7 @@ function saveSnippet() {
     const canUpdate = window.snippetId && ownsSnippet(window.snippetId) && window.creatorIpMatches;
     const idToSend = canUpdate ? window.snippetId : '';
     
-    fetch("https://arturo-lang.io/%<[basePath]>%/backend/save.php", {
+    fetch("https://arturo-lang.io/%<[basePath]>%backend/save.php", {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -428,7 +428,7 @@ function downloadSnippet() {
 }
 
 function getSnippet(id) {
-    fetch("https://arturo-lang.io/%<[basePath]>%/backend/get.php", {
+    fetch("https://arturo-lang.io/%<[basePath]>%backend/get.php", {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ i: id })
@@ -451,13 +451,13 @@ function getSnippet(id) {
                 window.isReadOnly = true;
                 window.creatorIpMatches = false;
                 
-                fetch("https://arturo-lang.io/%<[basePath]>%/backend/visit.php", {
+                fetch("https://arturo-lang.io/%<[basePath]>%backend/visit.php", {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ i: id })
                 }).catch(err => console.error('Visit tracking failed:', err));
             } else {
-                fetch("https://arturo-lang.io/%<[basePath]>%/backend/visit.php", {
+                fetch("https://arturo-lang.io/%<[basePath]>%backend/visit.php", {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ i: id })
@@ -652,7 +652,7 @@ function showLoadTab(tab) {
 }
 
 function loadExamplesList() {
-    fetch("https://arturo-lang.io/%<[basePath]>%/backend/getexamples.php")
+    fetch("https://arturo-lang.io/%<[basePath]>%backend/getexamples.php")
     .then(response => response.json())
     .then(data => {
         window.examplesList = data;
@@ -674,7 +674,7 @@ function displayExamples(examples) {
     
     list.innerHTML = examples.map(ex => `
         <div class="example-item" onclick="selectExample('${ex.replace(/'/g, "\\'")}')">
-            <span class="example-name">${ex}</span>
+            <span class="example-name">${decodeURIComponent(ex)}</span>
         </div>
     `).join('');
 }
@@ -683,7 +683,7 @@ function filterExamples() {
     const search = document.getElementById('examples-search').value.toLowerCase();
     if (!window.examplesList) return;
     
-    const filtered = window.examplesList.filter(ex => ex.toLowerCase().includes(search));
+    const filtered = window.examplesList.filter(ex => decodeURIComponent(ex).toLowerCase().includes(search));
     displayExamples(filtered);
 }
 
@@ -693,7 +693,7 @@ function selectExample(name) {
 }
 
 function getExample(name) {
-    fetch("https://arturo-lang.io/%<[basePath]>%/backend/example.php", {
+    fetch("https://arturo-lang.io/%<[basePath]>%backend/example.php", {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ i: name })

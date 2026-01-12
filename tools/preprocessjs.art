@@ -26,8 +26,16 @@ changes: #[
     ]
 ]
 
+basePath: ""
+
+if "latest" = arg\0 ->
+    basePath: "latest/"
+
+if "true" = arg\1 ->
+    basePath: "test/"
+
 params: #[
-    basePath: arg\0
+    basePath: basePath
     keywordPredicates: join.with:"|" keywordPredicates ø
     keywordRest: join.with:"|" keywordRest ø
 ]
