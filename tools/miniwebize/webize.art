@@ -38,7 +38,6 @@ Config: #[]
 Target: "build"
 Theme: "theme"
 ThemeSettings: # "theme/settings.art"
-WebsiteData: #[]
 InfoPadding: 13
 
 ;--------------------------
@@ -104,7 +103,7 @@ InfoPadding: 13
 ;--------------------------
 
 getWebsiteData: function [what][
-    return WebsiteData\[what]
+    return Data\[what]
 ]
 
 getRootPath: function [][
@@ -224,15 +223,12 @@ githubMarkdown: function [src][
     switch exists? "config.art" [
         Config: #"config.art" 
 
-        inspect list "data"
-        WebsiteData: #"data/setup.art"
-
         Data: #[]
         loop list "data" 'f [
             if ".art" = extract.extension f ->
                 set Data (extract.basename f) -- extract.extension f do read f
         ]
-        inspect Data
+        ;inspect Data
 
         ;-------------------------
         ; Render pages
