@@ -38,7 +38,7 @@ Config: #[]
 Target: "build"
 Theme: "theme"
 ThemeSettings: # "theme/settings.art"
-WebsiteData: # "data/setup.art"
+WebsiteData: #[]
 InfoPadding: 13
 
 ;--------------------------
@@ -223,6 +223,9 @@ githubMarkdown: function [src][
 {_buildProject}: function [loc][
     switch exists? "config.art" [
         Config: #"config.art" 
+
+        inspect list "."
+        WebsiteData: #"data/setup.art"
 
         Data: #.data[]
         loop list "data" 'f [
