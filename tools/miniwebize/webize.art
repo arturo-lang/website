@@ -38,6 +38,7 @@ Config: #[]
 Target: "build"
 Theme: "theme"
 ThemeSettings: # "theme/settings.art"
+WebsiteData: # "data/setup.art"
 InfoPadding: 13
 
 ;--------------------------
@@ -101,6 +102,19 @@ InfoPadding: 13
 ;--------------------------
 ; Helpers
 ;--------------------------
+
+getWebsiteData: function [what][
+    return WebsiteData\[what]
+]
+
+getRootPath: function [][
+    rootPath: "/"
+    if "latest" = getWebsiteData 'branch ->
+        rootPath: "/latest/"
+
+    if getWebsiteData 'test? ->
+        rootPath: "/test/"
+]
 
 linkTo: function [location][
     i: 0 
