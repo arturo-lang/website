@@ -158,7 +158,7 @@ jobs:
                 arturo tools/binarygen.art "$VERSION_TAG" "$CHANNEL" "${{ inputs.test }}"
                 arturo tools/sitegen.art
                 arturo tools/indexgen.art
-                arturo tools/preprocessjs.art "$CHANNEL"
+                arturo tools/preprocessjs.art "$CHANNEL" "${{ inputs.test }}"
 
                 mv details.art src/data/setup.art
                 rm -rf tmpdocs
