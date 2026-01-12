@@ -674,7 +674,7 @@ function displayExamples(examples) {
     
     list.innerHTML = examples.map(ex => `
         <div class="example-item" onclick="selectExample('${ex.replace(/'/g, "\\'")}')">
-            <span class="example-name">${ex}</span>
+            <span class="example-name">${decodeURIComponent(ex)}</span>
         </div>
     `).join('');
 }
