@@ -54,7 +54,7 @@
                 </div>
                 <div class="column is-6 is-hidden-touch is-block-desktop">
                     <p class="has-text-right is-size-6">
-                        <b>Latest build:</b><br><span class="release-version"><||= W\version ||></span> @ <span id="release-date"><||= W\buildDate ||></span>
+                        <b>Latest build:</b><br><span class="release-version"><||= Data\setup\version ||></span><|| unless empty? Data\setup\snapshot [ ||><br><span id="release-date"><||= Data\setup\snapshot ||></span><|| ] ||>
                     </p>
                 </div>
             </div>
