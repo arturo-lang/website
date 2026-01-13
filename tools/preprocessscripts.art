@@ -24,6 +24,12 @@ changes: #[
         'keywordPredicates
         'keywordRest
     ]
+    "src/scripts/installer.sh": [
+        'channel
+    ]
+    "src/scripts/installer.ps1": [
+        'channel
+    ]
 ]
 
 basePath: ""
@@ -34,10 +40,13 @@ if "latest" = arg\0 ->
 if "true" = arg\1 ->
     basePath: "test/"
 
+channel: ("latest" = arg\0) ? -> "latest" -> "stable"
+
 params: #[
     basePath: basePath
     keywordPredicates: join.with:"|" keywordPredicates ø
     keywordRest: join.with:"|" keywordRest ø
+    channel: channel
 ]
 
 loop changes [file, replacements][
