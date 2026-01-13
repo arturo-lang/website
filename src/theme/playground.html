@@ -62,7 +62,7 @@
                     <div id="toast-notification"></div>
                 </div>
                 <div class="column" style="background: black;">
-                    <div id="terminal"><button id="terminal-info-toggle" onclick="toggleTerminalInfo()" title="Toggle system info"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 256 256"><||= phosphor 'duotone 'info ||></svg></button><div id="terminal-info" style="color:gray;"># version : <||= Data\setup\version ||><br># build   : <||= Data\setup\build ||><br># arch    : amd64/freebsd<br><br></div><div id="terminal_output"></div><div id="terminal-status" style="display: none;"></div></div>
+                    <div id="terminal"><button id="terminal-info-toggle" onclick="toggleTerminalInfo()" title="Toggle system info"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 256 256"><||= phosphor 'duotone 'info ||></svg></button><div id="terminal-info" style="color:gray;"># version  : <||= Data\setup\version ||><|| if contains? Data\setup\version "-dev" [||><br># snapshot : <||= Data\setup\snapshot ||><|| ] ||><br># arch     : amd64/freebsd<br><br></div><div id="terminal_output"></div><div id="terminal-status" style="display: none;"></div></div>
                 </div>
             </div>
         </main>
