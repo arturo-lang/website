@@ -138,7 +138,7 @@ revisionPart: (and?
 
 unless empty? sys\codename ->
     versionPart: versionPart ++ " " ++ { "|sys\codename|"}
-
+ 
 Details: #[
     version: versionPart
     snapshot: ""
