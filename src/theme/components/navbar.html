@@ -19,7 +19,7 @@
             </div>
             <div class="dropdown-menu" id="dropdown-menu" role="menu">
                 <div class="dropdown-content">
-                    <a href="<||= getCanonical getRootPath ||>" class="dropdown-item <|| if Data\setup\branch = "latest" [||>is-active<||]||>">
+                    <a href="<||= (Data\setup\branch = "stable")?[getCanonical "/latest/"][getCanonical getRootPath] ||>" class="dropdown-item <|| if Data\setup\branch = "latest" [||>is-active<||]||>">
                         @latest
                     </a>
                     <hr class="dropdown-divider">
