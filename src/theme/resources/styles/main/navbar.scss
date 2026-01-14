@@ -64,11 +64,30 @@ a.navbar-item {
 
     .dropdown-menu {
         a.dropdown-item {
+            padding-right: 1rem;
+
+            .branch-wrapper {
+                display: flex; 
+                align-items: baseline;
+
+                .branch-name {
+                    font-weight: normal;
+                }
+
+                .branch-details {
+                    opacity: 0.9; 
+                    font-size: 0.9em; 
+                    margin-left:auto;
+                }
+            }
 
             &.is-active {
                 background-color: #f5e8f5;
                 color: #6a156b;
-                font-weight: 600;
+                
+                .branch-name {
+                    font-weight: 600;
+                }
             }
 
             &:hover {

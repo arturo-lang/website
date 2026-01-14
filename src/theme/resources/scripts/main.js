@@ -385,6 +385,33 @@ document.addEventListener('DOMContentLoaded', () => {
 		});
 	}
 
+	let stableVersionFetched = false;
+	function fetchAndUpdateStableVersion() {
+		if (stableVersionFetched) return;
+		
+		stableVersionFetched = true;
+		
+		fetch('https://arturo-lang.io/%<[basePath]>%backend/getstable.php')
+			.then(response => response.json())
+			.then(data => {
+				if (data.version) {
+					const versionElement = document.getElementById('stable-release-version');
+					if (versionElement) {
+						versionElement.textContent = data.version;
+					}
+				}
+			})
+			.catch(error => {
+				console.error('Failed to fetch stable version:', error);
+			});
+	}
+
+	// Listen for mouseenter on the dropdown
+	const dropdown = document.querySelector('.dropdown');
+	if (dropdown) {
+		dropdown.addEventListener('mouseenter', fetchAndUpdateStableVersion);
+	}
+
     var element =  document.getElementById('version-switch');
     if (typeof(element) != 'undefined' && element != null)
     {
