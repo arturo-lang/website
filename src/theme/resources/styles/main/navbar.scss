@@ -74,6 +74,21 @@ a.navbar-item {
             &:hover {
                 border: 0;
             }
+
+            .branch-wrapper {
+                display: flex; 
+                align-items: baseline;
+
+                .branch-name {
+
+                }
+
+                .branch-details {
+                    opacity: 0.9; 
+                    font-size: 0.9em; 
+                    margin-left:auto;
+                }
+            }
         }
     }
 }
