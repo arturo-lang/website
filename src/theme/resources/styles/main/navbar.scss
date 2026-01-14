@@ -66,22 +66,12 @@ a.navbar-item {
         a.dropdown-item {
             padding-right: 1rem;
 
-            &.is-active {
-                background-color: #f5e8f5;
-                color: #6a156b;
-                font-weight: 600;
-            }
-
-            &:hover {
-                border: 0;
-            }
-
             .branch-wrapper {
                 display: flex; 
                 align-items: baseline;
 
                 .branch-name {
-
+                    font-weight: normal;
                 }
 
                 .branch-details {
@@ -89,6 +79,19 @@ a.navbar-item {
                     font-size: 0.9em; 
                     margin-left:auto;
                 }
+            }
+
+            &.is-active {
+                background-color: #f5e8f5;
+                color: #6a156b;
+                
+                .branch-name {
+                    font-weight: 600;
+                }
+            }
+
+            &:hover {
+                border: 0;
             }
         }
     }
