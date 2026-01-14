@@ -21,6 +21,7 @@ changes: #[
         'keywordRest
     ]
     "src/theme/resources/scripts/main.js": [
+        'basePath
         'keywordPredicates
         'keywordRest
     ]
