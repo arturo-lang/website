@@ -137,7 +137,7 @@ revisionPart: (and?
 )? -> last parts -> ""
 
 unless empty? sys\codename ->
-    versionPart: versionPart ++ " " ++ { "|sys\codename|"}
+    versionPart: versionPart ++ " " ++ ~{ "|sys\codename|"}
  
 Details: #[
     version: versionPart
