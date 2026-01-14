@@ -401,7 +401,7 @@ document.addEventListener('DOMContentLoaded', () => {
 						if (item.textContent.includes('#stable')) {
 							item.innerHTML = item.innerHTML.replace(
 								'#stable', 
-								`<span style="display:flex; align-items: baseline;"><span>#stable</span><span style="opacity: 0.9; font-size: 0.9em; margin-left:auto;">(${data.version})</span></span>`
+								`<span style="display:flex; align-items: baseline;"><span>#stable</span><span style="opacity: 0.9; font-size: 0.9em; margin-left:auto;">${data.version}</span></span>`
 							);
 						}
 					});
