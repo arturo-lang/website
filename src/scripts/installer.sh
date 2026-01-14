@@ -18,7 +18,7 @@ INSTALL_DIR="$HOME/.arturo"
 BIN_DIR="$INSTALL_DIR/bin"
 TMP_DIR=""
 
-VERSION_TYPE="latest"
+VERSION_TYPE="%<[channel]>%"
 BUILD_VARIANT="full"
 
 for arg in "$@"; do

@@ -158,7 +158,7 @@ jobs:
                 arturo tools/binarygen.art "$VERSION_TAG" "$CHANNEL" "${{ inputs.test }}"
                 arturo tools/sitegen.art
                 arturo tools/indexgen.art
-                arturo tools/preprocessjs.art "$CHANNEL" "${{ inputs.test }}"
+                arturo tools/preprocessscripts.art "$CHANNEL" "${{ inputs.test }}"
 
                 mv details.art src/data/setup.art
                 rm -rf tmpdocs
@@ -181,7 +181,16 @@ jobs:
                 echo "${{ steps.download.outputs.version_tag }}" > tmpdocs/files/VERSION
                 echo "✅ Binaries in tmpdocs:"
                 ls -lh tmpdocs/files/
-                
+
+            - name: Create remote directory
+              uses: appleboy/ssh-action@v1.2.0
+              with:
+                host: arturo-lang.io
+                username: web
+                key: ${{ secrets.FREEBSD_DEPLOYMENT }}
+                script: |
+                  mkdir -p /usr/local/www/arturo/main/versions/${{ steps.deploy.outputs.path }}
+
             - name: Synchronize to website
               uses: burnett01/rsync-deployments@7.0.2
               with:

@@ -36,19 +36,19 @@ Install Arturo with a single command that automatically downloads the binary and
 
 For Linux, macOS, FreeBSD, or Windows (WSL/Git Bash/MSYS2):
 ```bash
-curl -sSL https://get.arturo-lang.io | sh
+curl -sSL https://get.arturo-lang.io%BRANCH% | sh
 ```
 
 Or using wget:
 ```bash
-wget -qO- https://get.arturo-lang.io | sh
+wget -qO- https://get.arturo-lang.io%BRANCH% | sh
 ```
 
 <h5 id="windows">Windows</h5>
 
 If you're on Windows, the command above will likely work for you. But if you prefer PowerShell, we've got you covered too:
 ```powershell
-iwr -useb https://get.arturo-lang.io/ps | iex
+iwr -useb https://get.arturo-lang.io%BRANCH%/ps | iex
 ```
 
 <h3 id="try-it-out">Try it out</h3>
