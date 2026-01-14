@@ -65,6 +65,8 @@ a.navbar-item {
     .dropdown-menu {
         a.dropdown-item {
 
+            padding-right: 1rem;
+
             &.is-active {
                 background-color: #f5e8f5;
                 color: #6a156b;
