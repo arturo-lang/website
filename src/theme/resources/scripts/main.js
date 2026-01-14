@@ -395,16 +395,10 @@ document.addEventListener('DOMContentLoaded', () => {
 			.then(response => response.json())
 			.then(data => {
 				if (data.version) {
-					// Find the dropdown item containing #stable
-					const dropdownItems = document.querySelectorAll('.dropdown-item');
-					dropdownItems.forEach(item => {
-						if (item.textContent.includes('#stable')) {
-							item.innerHTML = item.innerHTML.replace(
-								'#stable', 
-								`<span style="display:flex; align-items: baseline;"><span>#stable</span><span style="opacity: 0.9; font-size: 0.9em; margin-left:auto;">${data.version}</span></span>`
-							);
-						}
-					});
+					const versionElement = document.getElementById('stable-release-version');
+					if (versionElement) {
+						versionElement.textContent = data.version;
+					}
 				}
 			})
 			.catch(error => {
