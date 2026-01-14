@@ -390,7 +390,7 @@ function saveSnippet() {
                 
                 // Show modal after toast disappears
                 setTimeout(() => {
-                    const fullUrl = window.location.origin + window.location.pathname.split('/').slice(0, -1).join('/') + '/' + data.id;
+                    const fullUrl = "https://arturo-lang.io/%<[basePath]>%playground/" +data.id;
                     document.getElementById('snippet-link').value = fullUrl;
                     document.getElementById('save-modal').classList.add('is-active');
                 }, 3200);
