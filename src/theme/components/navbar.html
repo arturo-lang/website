@@ -25,7 +25,7 @@
                     <a href="<||= (Data\setup\branch = "stable")?[getCanonical "/latest/"][getCanonical getRootPath] ||>" class="dropdown-item <|| if Data\setup\branch = "latest" [||>is-active<||]||>">
                         <span class="branch-wrapper"><span class="branch-name">latest</span><span class="branch-details">nightly</span></span>
                     </a>
-                    <hr class="dropdown-divider">
+                    <!--<hr class="dropdown-divider">-->
                     <a href="<||= getCanonical "/" ||>" class="dropdown-item <|| if Data\setup\branch = "stable" [||>is-active<||]||>">
                         <span class="branch-wrapper"><span class="branch-name">stable</span><span class="branch-details" id="stable-release-version"></span></span>
                     </a>
