@@ -385,6 +385,42 @@ document.addEventListener('DOMContentLoaded', () => {
 		});
 	}
 
+	// Stable version fetcher for dropdown
+	let stableVersionFetched = false;
+	const dropdownMenu = document.getElementById('dropdown-menu');
+	
+	if (dropdownMenu) {
+		const dropdown = dropdownMenu.closest('.dropdown');
+		
+		if (dropdown) {
+			dropdown.addEventListener('click', function(e) {
+				if (!dropdown.classList.contains('is-active') && !stableVersionFetched) {
+					fetch('/backend/get-stable-version.php')
+						.then(response => response.json())
+						.then(data => {
+							if (data.version) {
+								stableVersionFetched = true;
+								
+								// Find the dropdown item containing #stable
+								const dropdownItems = dropdownMenu.querySelectorAll('.dropdown-item');
+								dropdownItems.forEach(item => {
+									if (item.textContent.includes('#stable')) {
+										item.innerHTML = item.innerHTML.replace(
+											'#stable', 
+											`#stable <span style="opacity: 0.7; font-size: 0.9em;">(${data.version})</span>`
+										);
+									}
+								});
+							}
+						})
+						.catch(error => {
+							console.error('Failed to fetch stable version:', error);
+						});
+				}
+			});
+		}
+	}
+
     var element =  document.getElementById('version-switch');
     if (typeof(element) != 'undefined' && element != null)
     {
