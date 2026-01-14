@@ -54,7 +54,7 @@
     // =============================================================================
 
     window.initDocSearch = function(showInModal) {
-        basePath = '/%<[basePath]>%';
+        basePath = 'https://arturo-lang.io/%<[basePath]>%';
         useModal = showInModal || false;
         initSearch().then(() => {
             // parse URL for search query
@@ -92,7 +92,7 @@
 
     async function initSearch() {
         try {
-            const response = await fetch(basePath + '/resources/data/index.json');
+            const response = await fetch(basePath + 'resources/data/index.json');
             searchData = await response.json();
             
             fuse = new Fuse(searchData, {
@@ -438,7 +438,7 @@
         }
 
         const highlightedName = highlightFuseMatch(item.name, nameMatch);
-        const url = basePath + '/documentation/' + item.url;
+        const url = basePath + 'documentation/' + item.url;
         const title = item.name;
         
         let contentHTML;
@@ -482,7 +482,7 @@
         const div = document.createElement('div');
         div.className = 'search-result-item';
         div.setAttribute('data-index', index);
-        div.setAttribute('data-url', basePath + '/documentation/' + item.url);
+        div.setAttribute('data-url', basePath + 'documentation/' + item.url);
         div.setAttribute('data-title', item.name);
 
         const nameMatch = matches.find(m => m.key === 'name');
