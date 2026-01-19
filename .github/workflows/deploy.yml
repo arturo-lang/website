@@ -192,7 +192,7 @@ jobs:
                   mkdir -p /usr/local/www/arturo/main/versions/${{ steps.deploy.outputs.path }}
 
             - name: Synchronize to website
-              uses: burnett01/rsync-deployments@7.0.2
+              uses: burnett01/rsync-deployments@v8
               with:
                 switches: -avzr --delete
                 path: tmpdocs/
