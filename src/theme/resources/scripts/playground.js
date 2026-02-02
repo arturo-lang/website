@@ -891,7 +891,7 @@ function parse_query_string(query) {
     for (var i = 0; i < vars.length; i++) {
         var pair = vars[i].split("=");
         var key = decodeURIComponent(pair[0]);
-        var value = pair[1]; // Keep the value URL-encoded
+        var value = decodeURIComponent(pair[1]);
         if (typeof query_string[key] === "undefined") {
             query_string[key] = value;
         } else if (typeof query_string[key] === "string") {
