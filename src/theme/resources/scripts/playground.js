@@ -375,7 +375,8 @@ function saveSnippet() {
                 updateButtonStates();
             }, 50);
             
-            window.history.pushState({}, '', '%<[basePath]>%playground/' + data.id);
+            const snippetPath = '%<[basePath]>%playground/' + data.id;
+            window.history.pushState({}, '', snippetPath);
             
             if (wasUpdate) {
                 // Just re-saved existing snippet - show toast only
@@ -390,7 +391,7 @@ function saveSnippet() {
                 
                 // Show modal after toast disappears
                 setTimeout(() => {
-                    const fullUrl = "https://arturo-lang.io/%<[basePath]>%playground/" + data.id;
+                    const fullUrl = "https://arturo-lang.io/" + snippetPath;
                     document.getElementById('snippet-link').value = fullUrl;
                     document.getElementById('save-modal').classList.add('is-active');
                 }, 3200);
