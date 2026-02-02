@@ -375,7 +375,16 @@ function saveSnippet() {
                 updateButtonStates();
             }, 50);
             
-            window.history.pushState({}, '', window.location.pathname.split('/').slice(0, -1).join('/') + '/' + data.id);
+            var currentPath = window.location.pathname;
+            var newPath;
+            if (currentPath.endsWith('/playground') || currentPath.endsWith('/playground/')) {
+                // No snippet ID yet, just append
+                newPath = currentPath.replace(/\/$/, '') + '/' + data.id;
+            } else {
+                // Has a snippet ID already, replace it
+                newPath = currentPath.replace(/\/[^\/]+$/, '/' + data.id);
+            }
+            window.history.pushState({}, '', newPath);
             
             if (wasUpdate) {
                 // Just re-saved existing snippet - show toast only
