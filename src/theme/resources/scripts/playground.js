@@ -891,14 +891,17 @@ function parse_query_string(query) {
     for (var i = 0; i < vars.length; i++) {
         var pair = vars[i].split("=");
         var key = decodeURIComponent(pair[0]);
-        var value = decodeURIComponent(pair[1]);
+        // IMPORTANT: 
+        // For readability reasons, files on disk have literal spaces 
+        // but other chars are URL-encoded
+        var value = pair[1].replace(/%20/g, ' ');
         if (typeof query_string[key] === "undefined") {
-            query_string[key] = decodeURIComponent(value);
+            query_string[key] = value;
         } else if (typeof query_string[key] === "string") {
-            var arr = [query_string[key], decodeURIComponent(value)];
+            var arr = [query_string[key], value];
             query_string[key] = arr;
         } else {
-            query_string[key].push(decodeURIComponent(value));
+            query_string[key].push(value);
         }
     }
     return query_string;
