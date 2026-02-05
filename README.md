@@ -36,7 +36,9 @@ src/
 │   └── visit.php               # Usage tracking
 │
 ├── config/
-│   └── nginx.conf              # Server configuration
+│   ├── nginx.conf              # Main Server configuration
+|   ├── arturo-lang.io.conf     # Configuration for the main website
+|   └── pkgr.art.conf           # Configuration for the packager
 │
 ├── data/                       # Auto-generated (DO NOT EDIT)
 │
