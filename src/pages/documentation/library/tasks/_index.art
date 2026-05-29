@@ -1,0 +1,136 @@
+description: « Spawning, awaiting & composing asynchronous tasks
+overview: ---
+
+The Tasks module is Arturo's gateway to cooperative concurrency. You spawn a block of code as a `:task`, keep doing other work, and pick up the result whenever you need it. Tasks run as in-process fibers by default — sub-millisecond spawn, no threads — with an opt-in subprocess flavor for true isolation.
+
+### Key Concepts
+
+- Spawn blocks with `do.async` — returns a `:task` immediately
+- Tasks run cooperatively: they yield at I/O and `pause` boundaries
+- `wait` blocks until a task settles and hands you its value
+- Errors come back as `:error` values, cancellation comes back as `:null`
+- Compose many tasks with the `wait.all` / `wait.first` / `wait.any` family
+- `do.async.isolated` runs the block in a separate process for sandboxing
+
+> [!NOTE] Concurrency here is *cooperative*, not parallel — just like Python's asyncio. It shines for I/O-bound work (network, files, subprocesses). CPU-bound code inside a fiber won't yield; for that, reach for `do.async.isolated`.
+
+### Basic Usage
+
+#### Spawning & Awaiting
+
+```arturo
+; spawn a block — runs in-process by default
+t: do.async [40 + 2]
+print wait t            ; 42
+
+; the task value itself is first-class
+t: do.async.as: "fetch-1" [pause 100 42]
+print t                 ; <task:fetch-1>(0x...)
+inspect t               ; [pending] fetch-1 0x... :task
+```
+
+#### Closure Capture
+
+A spawned block sees a *snapshot* of the surrounding scope:
+
+```arturo
+x: 10
+t: do.async [x + 32]
+print wait t            ; 42  (the child saw `x`)
+```
+
+> [!WARNING] Capture is **shallow-copy at spawn time**. Each task gets its own copy of the symbols — writes inside a task do **not** leak back to the parent.
+> ```arturo
+> u: 1
+> map.parallel 1..10 'a [u: u + 1]
+> print u               ; 1  (UNCHANGED — each fiber mutated its own copy)
+> ```
+> Everyone expects this once it's explained; nobody expects it the first time.
+
+#### Process Isolation
+
+When you need a clean VM (sandboxing, true CPU parallelism), opt into a subprocess:
+
+```arturo
+t: do.async.isolated [
+    print "fresh VM"
+    1 / 0
+]
+r: wait t               ; :error Arithmetic Error: Division by zero
+```
+
+Even across the process boundary, you get the **real** error — kind, message and all — not a generic "exited with code 1". Live `print` output is preserved too.
+
+```arturo
+; sync sugar — blocks the caller, returns the child's result
+print do.isolated [40 + 2]      ; 42
+```
+
+> [!IMPORTANT] `do.async.isolated` does **not** capture closures (it's a fresh process) and costs ~30 ms to fork+exec, versus sub-millisecond for an in-process fiber. Use it deliberately.
+
+### Common Patterns
+
+#### Inspecting & Cancelling
+
+```arturo
+t: do.async [pause 1000 42]
+
+print finished? t       ; true once settled in any way
+print failed? t         ; true only if the task raised
+
+; cancellation is not a failure
+c: do.async [pause 5000 'never]
+cancel c
+print wait c            ; :null  (cancelled ≠ failed)
+```
+
+The `do` builtin is a convenient mirror of `wait` — it returns `:error` on failure and `:null` on cancellation:
+
+```arturo
+do t                    ; same as `wait t`
+```
+
+#### Fan-in: Awaiting Many
+
+```arturo
+; wait for ALL — results come back in input order
+results: wait.all @[ do.async [10] do.async [20] do.async [30] ]
+; [10 20 30]   (a failed slot becomes an :error)
+
+; first to settle wins; .cancel aborts the losers
+winner: wait.cancel.first tasks
+
+; first N to settle — returned in COMPLETION order, not input order
+top3: wait.any: 3 mirrors
+top3: wait.cancel.any: 3 mirrors    ; abort the rest once 3 have settled
+```
+
+#### Timeouts
+
+```arturo
+; integer milliseconds
+r: wait.timeout: 200 t              ; :error on timeout; task left pending
+
+; or a :quantity literal (note the backtick)
+r: wait.timeout: 2`s t
+
+; per-task shrinking budget across a whole batch
+results: wait.all.timeout: 1000 ts
+```
+
+> [!TIP] Pair tasks with the [Events](/documentation/library/events) module: `on.done`, `on.failed`, `on.cancelled` and `on.finished` let you attach callbacks to a task instead of blocking on `wait`.
+
+#### A Small Worker Example
+
+```arturo
+; kick off three independent fetches, then collect them
+urls: ["https://a.com" "https://b.com" "https://c.com"]
+
+tasks: map urls 'u -> request.async u #[]
+pages: wait.all tasks
+
+loop pages 'p ->
+    print ["status:" p\status]
+```
+
+> [!CAUTION] CPU-bound work inside an in-process task starves its siblings — the fiber never yields. `map.parallel 1..10 'x [heavy-cpu x]` runs effectively serially. For genuine CPU parallelism, fan out with `do.async.isolated`.

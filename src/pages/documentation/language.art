@@ -974,9 +974,9 @@ print type db   ; would print: :database
 
 Another not-literally constructible (but still powerful) value type is the Socket.
 
-To use Socket values properly, just have a look into the Sockets library module.
+To use Socket values properly, just have a look into the Streams library module.
 
-If you want to create one, just have a look at the quick example below, using <code><a href="../library/sockets/listen">listen</a></code>:
+If you want to create one, just have a look at the quick example below, using <code><a href="../library/streams/listen">listen</a></code>:
 
 ```arturo
 ; start a server listening on port 18966
