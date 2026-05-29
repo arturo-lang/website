@@ -133,3 +133,37 @@ serve.verbose [
 ```
 
 > [!TIP] The serve function can also open Chrome in app mode with `.chrome` for a more app-like experience.
+
+### Asynchronous Operations
+
+Every network operation here has an `.async` flavour. Instead of blocking, it returns a `:task` you can `wait` on later — letting you fire off several requests at once and collect them when ready:
+
+```arturo
+; a single non-blocking request
+t: request.async "https://example.com" ø
+response: wait t
+print response\status
+
+; many in flight at once, collected in input order
+urls: ["https://a.com" "https://b.com" "https://c.com"]
+pages: wait.all map urls 'u -> request.async u ø
+```
+
+`.async` is available across the module:
+
+```arturo
+t: request.async "https://example.com" ø                    ; HTTP request
+t: download.async "https://example.com/big.zip" .as:"big.zip"
+t: mail.async to:"x@y.com" subject:"hi" body:"hello"
+s: serve.async.silent.port: 8000 [ GET "/" -> "ok" ]
+```
+
+A `.async` server keeps running in the background; `cancel` it to close the socket and free the port:
+
+```arturo
+s: serve.async.silent.port: 8000 [ GET "/" -> "ok" ]
+; ... do other work ...
+cancel s
+```
+
+> [!TIP] You don't even need `.async` to get concurrency inside a parallel iterator — plain `request` / `download` automatically yield cooperatively when run on a non-main fiber. So `map.parallel urls 'u -> request u ø` already overlaps its requests. See the [Tasks](/documentation/library/tasks) and [Iterators](/documentation/library/iterators) modules.
