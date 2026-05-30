@@ -40,7 +40,7 @@ write "some content" "output.txt"
 write.append "more content" "output.txt"
 ```
 
-> [!TIP] Both `read` and `write` accept `.async`, returning a `:task` instead of blocking — handy for large files or for reading several at once:
+> [!TIP] Both `read` and `write` accept `.async`, returning a `:task` instead of blocking - handy for large files or for reading several at once:
 > ```arturo
 > t: read.async "data.json" .json
 > data: wait t
