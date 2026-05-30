@@ -203,3 +203,34 @@ print.lines result
 ```
 
 > [!TIP] Using pipes (|) can make complex data transformations more readable by breaking them into clear, sequential steps.
+
+#### Parallel Iteration
+
+Many iterators accept the `.parallel` attribute, fanning each element out into its own cooperative task - ideal for I/O-bound bodies (network, files):
+
+```arturo
+; bare flag - unbounded fan-out, results in input order
+results: map.parallel urls 'u [wait read.async u]
+
+; integer cap - sliding-window concurrency (at most 8 at a time)
+results: map.parallel: 8 urls 'u [wait read.async u]
+
+; concurrent side effects (completion order undefined)
+loop.parallel 1..10 'i [pause random 100 print i]
+
+; predicates short-circuit and cancel the losers
+every?.parallel 1..100 'x -> x < 1000       ; first false cancels the rest
+some?.parallel  1..100 'x -> x = 99         ; first true cancels the rest
+```
+
+The following iterators opt in: `map`, `loop`, `select`, `filter`, `enumerate`, `gather`, `arrange`, `maximum`, `minimum`, `every?`, `some?`.
+
+> [!NOTE] Order-dependent iterators - `fold`, `collect`, `cluster`, `chunk` - are **sync-only**; they don't accept `.parallel`.
+
+> [!WARNING] Each parallel body runs with a **shallow copy** of the surrounding scope, so writes don't leak back:
+> ```arturo
+> u: 1
+> map.parallel 1..10 'a [u: u + 1]
+> print u                                 ; 1  (UNCHANGED)
+> ```
+> Also note parallelism here is *cooperative* - CPU-bound bodies won't actually overlap. It pays off for I/O. See the [Tasks](/documentation/library/tasks) module for the concurrency model.

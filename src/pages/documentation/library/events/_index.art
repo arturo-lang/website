@@ -1,0 +1,109 @@
+description: « Defining, subscribing to & emitting events
+overview: ---
+
+The Events module gives Arturo a lightweight publish/subscribe system. You define an `:event`, register one or more handlers with `on`, and fire it with `emit`. Handlers run on the next dispatcher tick, keeping things predictable and free of reentrancy surprises. The same machinery powers built-in lifecycle signals and task callbacks.
+
+### Key Concepts
+
+- An `:event` is created with `event` and identified **by name**
+- `on` subscribes a handler; `emit` fires the event
+- Handlers receive an optional payload via `.with:`
+- `off` unsubscribes - all handlers, or a single one by id
+- Built-in events cover process lifecycle (`CtrlC`, `BeforeExit`, …)
+- Tasks are events too: `on` accepts a `:task` for done/failed callbacks
+
+> [!NOTE] Unlike channels (which are identified by reference), events are keyed **by name**. Two `event 'progress` calls refer to the *same* event - so a handler registered in one place fires for an `emit` anywhere else.
+
+### Basic Usage
+
+#### Defining & Subscribing
+
+```arturo
+DataReady: event 'dataReady
+
+; bind the payload to a literal symbol with .with:
+on.with:'payload DataReady [
+    print ["got:" payload]
+]
+
+; fire it - handler runs on the next dispatcher tick
+emit.with: #[user: "alice"] DataReady
+```
+
+> [!IMPORTANT] Hyphens don't survive the parser as event names - use `'dataReady`, not `'data-ready`.
+
+#### Unsubscribing
+
+```arturo
+; remove every handler for an event
+off DataReady
+
+; or keep a handle and remove just one
+id: on.id DataReady [print "x"]     ; returns an :integer id
+off id
+
+; fire-and-forget: run a handler exactly once
+on.once DataReady [print "fires once"]
+```
+
+#### Built-in Events
+
+Arturo ships a handful of lifecycle events you can hook into directly:
+
+```arturo
+on CtrlC      [ print "shutting down..." ]
+on BeforeExit [ print "bye" ]               ; runs at natural exit
+on SigTerm    [ print "term" ]              ; POSIX; then quit(143)
+on SigHup     [ print "hup" ]               ; POSIX; then quit(129)
+```
+
+> [!CAUTION] `BeforeExit` runs at the program's natural end and drains any pending events first. `SigTerm` / `SigHup` handlers run in an async-signal context - keep them short and side-effect-light.
+
+### Common Patterns
+
+#### Task Callbacks
+
+Because a `:task` is event-shaped, you can attach callbacks instead of blocking on `wait`:
+
+```arturo
+t: do.async [pause 1000 42]
+
+on.done.with:'r       t [print ["ok:" r]]
+on.failed.with:'e     t [print ["fail:" e]]
+on.cancelled.with:'r  t [print ["cancel:" r]]   ; r is :null
+on.finished.with:'r   t [print ["any:" r]]      ; fires on any outcome
+
+wait t              ; handlers fire synchronously before wait returns
+```
+
+> [!TIP] Task callbacks fire **synchronously** the moment the task settles - so `wait t` sees them run before it returns. Plain user `emit`, by contrast, schedules handlers for the next tick. The asymmetry is intentional.
+
+#### Cross-process Events
+
+Events bridge the parent ↔ `do.async.isolated` boundary in **both** directions. A child can report progress back to the parent:
+
+```arturo
+E: event 'progress
+on.with:'p E [print ["progress:" p]]
+
+t: do.async [
+    pause 50
+    emit.with: 25  event 'progress     ; child → parent
+    pause 50
+    emit.with: 100 event 'progress
+    "done"
+]
+print wait t        ; progress: 25 / progress: 100 / done
+```
+
+…and the parent can push to a child that's driving its own dispatcher:
+
+```arturo
+t: do.async [
+    on.with:'msg event 'tick [...]
+    wait do.async [pause 200]          ; pumps the inbound queue
+]
+emit.with: "hello" event 'tick         ; reaches the child
+```
+
+> [!WARNING] Built-in events stay **local**: an `emit CtrlC` from a child does *not* reach the parent's `CtrlC` handler. Only user-defined events cross the process boundary, and payloads are limited to round-trippable values (integers, strings, blocks, dictionaries, logicals, null).

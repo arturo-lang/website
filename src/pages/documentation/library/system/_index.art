@@ -62,15 +62,15 @@ status: execute.code "some_command"
 if status <> 0 -> 
     print "Command failed!"
 
-; asynchronous execution
-pid: execute.async "long_running_process"
-print ["Started process:" pid]
+; asynchronous execution - returns a :task, doesn't block
+t: execute.async "sleep 5; echo done"
+print wait t                    ; "done\n"
 
 ; direct shell execution
 execute.directly "echo 'hello' > output.txt"
 ```
 
-> [!TIP] Use `execute.code` when you need to check if a command succeeded, and `execute.async` for long-running processes that shouldn't block.
+> [!TIP] Use `execute.code` when you need to check if a command succeeded, and `execute.async` for long-running processes that shouldn't block. `execute.async` hands you a `:task` - `wait` it for the output, or `cancel` it to kill the process (and its whole group, on POSIX). See the [Tasks](/documentation/library/tasks) module.
 
 #### Command-line Arguments
 
@@ -100,29 +100,26 @@ inspect args
 ```arturo
 define :processManager [
     start: function [command][
-        pid: execute.async command
-        print ["Started process:" pid]
-        return pid
+        t: execute.async command        ; returns a :task
+        print "Started process"
+        return t
     ]
 
-    stop: function [pid][
-        terminate pid
-        print ["Terminated process:" pid]
-    ]
-
-    stopWithCode: function [pid code][
-        terminate.code:code pid 
-        print ["Terminated process:" pid "with code:" code]
+    stop: function [task][
+        cancel task                     ; kills the process (& its group on POSIX)
+        print "Terminated process"
     ]
 ]
 
 processManager: to :processManager []!
 
 ; let's start another Arturo process
-pid: processManager\start sys\binary
+task: processManager\start sys\binary
 pause 1000
-processManager\stop pid
+processManager\stop task
 ```
+
+> [!NOTE] `terminate` (and `terminate.code:`) still work for a raw integer PID - handy for processes you didn't spawn via `execute.async`. For tasks, prefer `cancel`.
 
 #### Configuration Management
 

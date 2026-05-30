@@ -40,6 +40,13 @@ write "some content" "output.txt"
 write.append "more content" "output.txt"
 ```
 
+> [!TIP] Both `read` and `write` accept `.async`, returning a `:task` instead of blocking - handy for large files or for reading several at once:
+> ```arturo
+> t: read.async "data.json" .json
+> data: wait t
+> ```
+> Inside a `.parallel` iterator, plain `read` / `write` already yield cooperatively, so you rarely need `.async` there. See the [Tasks](/documentation/library/tasks) module.
+
 #### Format Parsing & Generation
 
 ```arturo

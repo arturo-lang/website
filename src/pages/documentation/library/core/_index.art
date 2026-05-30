@@ -155,3 +155,21 @@ loop 1..10 'x [
     print x
 ]
 ```
+
+#### Asynchronous Execution
+
+The `do` builtin runs a block - and with `.async` it runs it *concurrently*, handing you back a `:task` instead of blocking:
+
+```arturo
+; run a block right now
+do [print "hello"]
+
+; spawn it as an in-process task - returns immediately
+t: do.async [40 + 2]
+print wait t                    ; 42
+
+; run it in a separate, sandboxed process
+print do.isolated [40 + 2]      ; 42
+```
+
+> [!TIP] `do.async` is the entry point to Arturo's cooperative concurrency. See the [Tasks](/documentation/library/tasks) module for awaiting, composing and cancelling tasks, and [Streams](/documentation/library/streams) for passing messages between them.
