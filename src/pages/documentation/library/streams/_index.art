@@ -1,18 +1,18 @@
 description: « Channels, sockets & cooperative message passing
 overview: ---
 
-The Streams module is Arturo's home for message passing — both between concurrent tasks (via `:channel`) and across the network (via sockets). It exposes a small, uniform vocabulary: you `send` a value at a destination, `receive` one from a source, and `unplug` when you're done. Those same three verbs work polymorphically over channels and sockets alike.
+The Streams module is Arturo's home for message passing - both between concurrent tasks (via `:channel`) and across the network (via sockets). It exposes a small, uniform vocabulary: you `send` a value at a destination, `receive` one from a source, and `unplug` when you're done. Those same three verbs work polymorphically over channels and sockets alike.
 
 ### Key Concepts
 
-- A `:channel` is an in-process pipe between fibers — Go-style
+- A `:channel` is an in-process pipe between fibers - Go-style
 - `send` / `receive` / `unplug` work on both `:channel` and `:socket`
 - Channels have three buffering modes: unbuffered, bounded, unbounded
 - Operations are **cooperative**: a `send`/`receive` parks the fiber, it never blocks the whole VM
 - Channels can cross the `do.async.isolated` process boundary, full-duplex
 - Sockets give you TCP/UDP network streams with the same verbs
 
-> [!NOTE] Inside a non-main fiber, `send` / `receive` / `accept` / `connect` yield *cooperatively* — so a parked operation lets sibling tasks run instead of stalling everything. On the main fiber they behave synchronously, as you'd expect.
+> [!NOTE] Inside a non-main fiber, `send` / `receive` / `accept` / `connect` yield *cooperatively* - so a parked operation lets sibling tasks run instead of stalling everything. On the main fiber they behave synchronously, as you'd expect.
 
 ### Basic Usage
 
@@ -24,17 +24,17 @@ Jobs: channel.bounded: 10 'jobs     ; bounded buffer of 10
 Jobs: channel.unbounded 'jobs       ; never blocks on send
 ```
 
-> [!IMPORTANT] Channels are **named for debugging, not keyed by name**. Two `channel 'foo` calls produce two *distinct* channels — identity is by reference. (This is the opposite of events, which *are* keyed by name.) The name only shows up in `print` / `inspect`.
+> [!IMPORTANT] Channels are **named for debugging, not keyed by name**. Two `channel 'foo` calls produce two *distinct* channels - identity is by reference. (This is the opposite of events, which *are* keyed by name.) The name only shows up in `print` / `inspect`.
 
 #### Sending & Receiving
 
 ```arturo
 send Jobs 42            ; parks if unbuffered and no receiver is ready
 v: receive Jobs         ; parks if the channel is empty
-unplug Jobs             ; close it — parked receivers wake with :null
+unplug Jobs             ; close it - parked receivers wake with :null
 ```
 
-> [!CAUTION] `receive` on a closed, empty channel returns `:null` — that's your signal to stop (mirrors Go's `v, ok := <-ch`, with `null? v` as the check). `send` on a *closed* channel raises an error, so guard it with `try` if a close can race your send.
+> [!CAUTION] `receive` on a closed, empty channel returns `:null` - that's your signal to stop (mirrors Go's `v, ok := <-ch`, with `null? v` as the check). `send` on a *closed* channel raises an error, so guard it with `try` if a close can race your send.
 
 ### Common Patterns
 
@@ -80,7 +80,7 @@ workers: map 1..4 'w [
 
 #### Cross-process Worker Pool
 
-Channels reach across the `do.async.isolated` boundary in both directions — the parent acts as a broker, so isolated workers can pull jobs and push results:
+Channels reach across the `do.async.isolated` boundary in both directions - the parent acts as a broker, so isolated workers can pull jobs and push results:
 
 ```arturo
 Jobs:    channel.bounded: 20 'jobs
@@ -104,7 +104,7 @@ print sort map 1..6 'k -> receive Results   ; [10 20 30 40 50 60]
 
 #### Network Streams
 
-The same `send` / `receive` / `unplug` verbs drive **sockets** — the module handles TCP (default) and UDP, server- and client-side:
+The same `send` / `receive` / `unplug` verbs drive **sockets** - the module handles TCP (default) and UDP, server- and client-side:
 
 ```arturo
 ; --- server ---
@@ -131,6 +131,6 @@ For faster, connectionless communication, switch to UDP:
 server: listen.udp 8000
 ```
 
-> [!WARNING] UDP messages may arrive out of order or not at all — only use it when your application can tolerate loss. And always `unplug` your sockets when you're done to free system resources.
+> [!WARNING] UDP messages may arrive out of order or not at all - only use it when your application can tolerate loss. And always `unplug` your sockets when you're done to free system resources.
 
-> [!TIP] Because channels are single-threaded and cooperative, there are no locks to reason about — every `send`/`receive` boundary *is* the synchronization point. Need to cap concurrency? A bounded channel pre-loaded with tokens makes a tidy semaphore.
+> [!TIP] Because channels are single-threaded and cooperative, there are no locks to reason about - every `send`/`receive` boundary *is* the synchronization point. Need to cap concurrency? A bounded channel pre-loaded with tokens makes a tidy semaphore.
