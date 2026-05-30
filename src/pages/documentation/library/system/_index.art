@@ -62,7 +62,7 @@ status: execute.code "some_command"
 if status <> 0 -> 
     print "Command failed!"
 
-; asynchronous execution — returns a :task, doesn't block
+; asynchronous execution - returns a :task, doesn't block
 t: execute.async "sleep 5; echo done"
 print wait t                    ; "done\n"
 
@@ -70,7 +70,7 @@ print wait t                    ; "done\n"
 execute.directly "echo 'hello' > output.txt"
 ```
 
-> [!TIP] Use `execute.code` when you need to check if a command succeeded, and `execute.async` for long-running processes that shouldn't block. `execute.async` hands you a `:task` — `wait` it for the output, or `cancel` it to kill the process (and its whole group, on POSIX). See the [Tasks](/documentation/library/tasks) module.
+> [!TIP] Use `execute.code` when you need to check if a command succeeded, and `execute.async` for long-running processes that shouldn't block. `execute.async` hands you a `:task` - `wait` it for the output, or `cancel` it to kill the process (and its whole group, on POSIX). See the [Tasks](/documentation/library/tasks) module.
 
 #### Command-line Arguments
 
@@ -119,7 +119,7 @@ pause 1000
 processManager\stop task
 ```
 
-> [!NOTE] `terminate` (and `terminate.code:`) still work for a raw integer PID — handy for processes you didn't spawn via `execute.async`. For tasks, prefer `cancel`.
+> [!NOTE] `terminate` (and `terminate.code:`) still work for a raw integer PID - handy for processes you didn't spawn via `execute.async`. For tasks, prefer `cancel`.
 
 #### Configuration Management
 
