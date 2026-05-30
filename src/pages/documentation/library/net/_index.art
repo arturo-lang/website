@@ -136,7 +136,7 @@ serve.verbose [
 
 ### Asynchronous Operations
 
-Every network operation here has an `.async` flavour. Instead of blocking, it returns a `:task` you can `wait` on later — letting you fire off several requests at once and collect them when ready:
+Every network operation here has an `.async` flavour. Instead of blocking, it returns a `:task` you can `wait` on later - letting you fire off several requests at once and collect them when ready:
 
 ```arturo
 ; a single non-blocking request
@@ -166,4 +166,4 @@ s: serve.async.silent.port: 8000 [ GET "/" -> "ok" ]
 cancel s
 ```
 
-> [!TIP] You don't even need `.async` to get concurrency inside a parallel iterator — plain `request` / `download` automatically yield cooperatively when run on a non-main fiber. So `map.parallel urls 'u -> request u ø` already overlaps its requests. See the [Tasks](/documentation/library/tasks) and [Iterators](/documentation/library/iterators) modules.
+> [!TIP] You don't even need `.async` to get concurrency inside a parallel iterator - plain `request` / `download` automatically yield cooperatively when run on a non-main fiber. So `map.parallel urls 'u -> request u ø` already overlaps its requests. See the [Tasks](/documentation/library/tasks) and [Iterators](/documentation/library/iterators) modules.
