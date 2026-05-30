@@ -158,13 +158,13 @@ loop 1..10 'x [
 
 #### Asynchronous Execution
 
-The `do` builtin runs a block — and with `.async` it runs it *concurrently*, handing you back a `:task` instead of blocking:
+The `do` builtin runs a block - and with `.async` it runs it *concurrently*, handing you back a `:task` instead of blocking:
 
 ```arturo
 ; run a block right now
 do [print "hello"]
 
-; spawn it as an in-process task — returns immediately
+; spawn it as an in-process task - returns immediately
 t: do.async [40 + 2]
 print wait t                    ; 42
 
