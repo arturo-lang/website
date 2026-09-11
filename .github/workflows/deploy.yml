@@ -18,13 +18,13 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                 repository: arturo-lang/website
                 fetch-depth: 0
 
             - name: "Install Node"
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v6
               with:
                 node-version: latest
 
@@ -145,7 +145,7 @@ jobs:
               shell: bash
 
             - name: Checkout examples repository
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                 repository: arturo-lang/examples
                 path: examples
@@ -223,7 +223,7 @@ jobs:
                   sudo /usr/local/sbin/arturo_setup_runner ${{ steps.deploy.outputs.path }}
 
             - name: Upload complete website artifact
-              uses: 'actions/upload-artifact@v4'
+              uses: 'actions/upload-artifact@v6'
               with:
                 name: website-${{ inputs.channel }}-${{ steps.download.outputs.version_tag }}
                 path: tmpdocs
