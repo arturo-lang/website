@@ -13,7 +13,8 @@ var _self="undefined"!=typeof window?window:"undefined"!=typeof WorkerGlobalScop
 Prism.languages.arturo = {
     'comment': /;.*/,
     'character': {
-        pattern: /`.`/,
+        pattern: /'(?:\\(?:x[0-9A-Fa-f]{1,2}|.)|[^'\\])'/,
+        greedy: true,
         alias: 'function'
     },
     'string': {
