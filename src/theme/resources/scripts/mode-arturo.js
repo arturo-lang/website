@@ -16,6 +16,7 @@ ace.define("ace/mode/arturo_highlight_rules",["require","exports","module","ace/
                     regex: "<\\:|\\-\\:|ø|@|#|\\+|\\||\\*|\\$|\\-|\\%|\\/|\\.\\.|\\^|~|=|<|>|\\\\|(?<!\\w)\\?"},
                 {token : "string", regex : /"/, next  : "string"},
                 {token : "string.other", regex : "{", next  : "string.other"},
+                {token : "constant.character", regex : /'(?:\\(?:x[0-9A-Fa-f]{1,2}|.)|[^'\\])'/},
                 {token : "comment",  regex : /;.+$/},
                 {token : "paren.map-start", regex : "#\\("},
                 {token : "paren.block-start", regex : "[\\[]"},
