@@ -139,6 +139,11 @@ jobs:
                 chmod +x /tmp/arturo/arturo
                 echo "/tmp/arturo" >> $GITHUB_PATH
                 
+                if ldd /tmp/arturo/arturo | grep "not found"; then
+                    echo "❌ ERROR: Missing shared libraries"
+                    exit 1
+                fi
+                
                 echo "✅ Arturo installed:"
                 /tmp/arturo/arturo --version
               shell: bash
