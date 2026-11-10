@@ -30,11 +30,6 @@ jobs:
 
             - name: "Install Ruby"
               uses: ruby/setup-ruby@v1
-              env:
-                # commonmarker's bundled oniguruma uses pre-C23 prototypes,
-                # which newer GCC (ubuntu-26.04) rejects as errors
-                # (target-specific, since rb_sys overrides plain CFLAGS)
-                CFLAGS_x86_64_unknown_linux_gnu: "-std=gnu17 -Wno-error=incompatible-pointer-types"
               with:
                 ruby-version: 3.3
                 bundler-cache: true
