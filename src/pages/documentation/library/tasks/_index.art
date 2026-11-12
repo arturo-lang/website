@@ -97,17 +97,27 @@ do t                    ; same as `wait t`
 results: wait.all @[ do.async [10] do.async [20] do.async [30] ]
 ; [10 20 30]   (a failed slot becomes an :error)
 
+tasks: @[ do.async [pause 300 'slow] do.async [pause 100 'fast] ]
+
 ; first to settle wins; .cancel aborts the losers
-winner: wait.cancel.first tasks
+winner: wait.cancel.first tasks     ; fast
+
+mirrors: @[
+    do.async [pause 400 "eu"]   do.async [pause 100 "us"]
+    do.async [pause 300 "asia"] do.async [pause 200 "au"]
+]
 
 ; first N to settle - returned in COMPLETION order, not input order
-top3: wait.any: 3 mirrors
+top3: wait.any: 3 mirrors           ; ["us" "au" "asia"]
 top3: wait.cancel.any: 3 mirrors    ; abort the rest once 3 have settled
 ```
 
 #### Timeouts
 
 ```arturo
+t: do.async [pause 500 'done]
+ts: @[ do.async [pause 100 1] do.async [pause 2000 2] ]
+
 ; integer milliseconds
 r: wait.timeout: 200 t              ; :error on timeout; task left pending
 
