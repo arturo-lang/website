@@ -81,7 +81,7 @@ define :apiClient [
     headers: method [][
         #[
             authorization: join ["Bearer " \token]
-            content-type: "application/json"
+            "content-type": "application/json"
         ]
     ]
 
@@ -89,7 +89,7 @@ define :apiClient [
         request join @[\baseUrl endpoint] .headers: \headers ø
     ]
 
-    post: function [endpoint data][
+    post: method [endpoint data][
         request.post.json join @[\baseUrl endpoint] .headers: \headers data
     ]
 ]
@@ -197,7 +197,7 @@ pages: wait.all map urls 'u -> request.async u ø
 ```arturo
 t: request.async "https://example.com" ø                    ; HTTP request
 t: download.async "https://example.com/big.zip" .as:"big.zip"
-t: mail.async to:"x@y.com" subject:"hi" body:"hello"
+t: mail.async "x@y.com" "hi" "hello"
 s: serve.async.silent.port: 8000 [ GET "/" -> "ok" ]
 ```
 
