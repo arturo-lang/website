@@ -51,6 +51,12 @@ cmd: input.repl ">> "
 print color #red "Error!"
 print color.bold #blue "Important"
 print color.underline #green "Success"
+print color.italic #cyan "Emphasized"
+print color.dim #white "Less important"
+print color.strikethrough #red "Removed"
+
+; background color
+print color.bg:#blue #white "White on blue"
 
 ; keep color active
 prints color.keep #red "This "
