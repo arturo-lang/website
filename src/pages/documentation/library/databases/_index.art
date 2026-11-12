@@ -55,7 +55,8 @@ minAge: 20
 results: query.with: @[minAge] db "SELECT * FROM users WHERE age > ?"
 loop results 'user ->
     print ["User:" user\1 "Age:" user\2]    
-; User: Alice Age: 30 
+; User: John Age: 25
+; User: Alice Age: 30
 ```
 
 > [!IMPORTANT] Always use parametrized queries when dealing with user input to prevent SQL injection attacks.
@@ -70,10 +71,9 @@ query db [
     "INSERT INTO users (name, age) VALUES ('Bob', 35)"
     "UPDATE users SET age = 31 WHERE name = 'Alice'"
 ]
+```
 
 > [!NOTE] This method of performing multiple operations is the equivalent of using `BEGIN TRANSACTION` blocks in SQL, although in much more... practical and Arturo-friendly way! ;-)
-
-```
 
 #### Getting Last Insert ID
 
