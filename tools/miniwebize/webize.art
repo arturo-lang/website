@@ -189,9 +189,16 @@ postprocessAlerts: function [src][
 
 rGfm: ./"gfm.rb"
 githubMarkdown: function [src][
-    src >> "tmp.md" 
-    ret: execute ~{:ruby |rGfm| tmp.md:}
+    src >> "tmp.md"
+    ; stderr goes to a separate file, so that nothing but
+    ; the actual HTML ever ends up in the generated page
+    res: execute.code ~{:ruby |rGfm| tmp.md 2>tmp.err:}
+    errors: read "tmp.err"
     delete "tmp.md"
+    delete "tmp.err"
+    if res\code <> 0 ->
+        panic ~"Markdown conversion failed (exit code: |res\code|)\n|errors|"
+    ret: res\output
     ret: replace ret {/class="language-[^"]+"/} ""
     ret: replace ret {<pre lang="red"><code>} {<pre class="language-arturo"><code class="language-arturo">}
     ret: replace ret {<pre lang="arturo"><code>} {<pre class="language-arturo"><code class="language-arturo">}
