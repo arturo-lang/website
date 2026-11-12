@@ -209,6 +209,8 @@ print.lines result
 Many iterators accept the `.parallel` attribute, fanning each element out into its own cooperative task - ideal for I/O-bound bodies (network, files):
 
 ```arturo
+urls: ["https://arturo-lang.io" "https://example.com" "https://github.com"]
+
 ; bare flag - unbounded fan-out, results in input order
 results: map.parallel urls 'u [wait read.async u]
 
