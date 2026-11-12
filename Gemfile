@@ -1,3 +1,3 @@
 source 'https://rubygems.org'
 
-gem 'commonmarker', '2.1.0'
+gem 'commonmarker', '2.10.1'
