@@ -146,10 +146,11 @@ counter: 0
 
 ```arturo
 ; break from loop
-done?: false
+i: 0
 while [true][
-    if done? -> break
-    doSomething
+    i: i + 1
+    if i > 3 -> break
+    print i
 ]
 
 ; continue to next iteration
