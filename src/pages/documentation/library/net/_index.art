@@ -106,8 +106,7 @@ newUser: apiClient\post "/users" #[name: "John" email: "john@email.com"]
 
 ```arturo
 ; create a simple web server
-; create a simple web server
-serve.verbose [
+serve [
     GET "/" [
         render.template {
             <html>
@@ -119,17 +118,61 @@ serve.verbose [
         }
     ]
 
-    GET "/post/(?<id>.+)" $[id][
+    ; regex routes: named capture groups
+    ; become the action's parameters
+    GET {//post/(?<id>[0-9]+)/} $[id][
         render.template {
             This is post with id: <||= id ||>
         }
     ]
 
-    GET "/styles/(?<file>.+)" $[file][
-        ; serve static files
-        read file
+    ; serve static files - only allow plain filenames,
+    ; never pass the raw path to `read`!
+    GET {//css/(?<file>[a-zA-Z0-9_-]+\.css)/} $[file][
+        path: ~"css/|file|"
+        if not? file? path ->
+            return emit.status: 404 "Not found"
+
+        emit.css read path
     ]
 ]
+```
+
+Routes can also take path parameters, Sinatra-style: `:name` matches a single path segment, `*` matches anything (slashes included). Routes are tried top to bottom, and `any` catches whatever didn't match:
+
+```arturo
+serve [
+    ; literal routes first: this one wins over `/users/:id`
+    GET "/users/new"            -> "New user form"
+
+    ; `:name` params are matched by name...
+    GET "/users/:id"            $[id][ ~"User #|id|" ]
+    GET "/users/:id/posts/:pid" $[pid, id][ ~"Post #|pid| by user #|id|" ]
+
+    ; ...while `*` ones fill the remaining params, in order
+    GET "/say/*/to/*"           $[what, who][ ~"|what|, |who|!" ]
+
+    ; path params, query string & request body - all together
+    POST "/users/:id"           $[id, name][
+        emit.json write.json #[ id: id name: name updated: true ] ø
+    ]
+
+    ; fallback, if nothing else matched
+    GET any                     -> "Nothing here!"
+]
+
+; $> curl localhost:18966/users/42/posts/7
+; Post #7 by user #42
+
+; $> curl localhost:18966/say/hello/to/world
+; hello, world!
+
+; $> curl -X POST localhost:18966/users/42 -d "name=John"
+; {
+;     "id": "42",
+;     "name": "John",
+;     "updated": true
+; }
 ```
 
 > [!TIP] The serve function can also open Chrome in app mode with `.chrome` for a more app-like experience.
