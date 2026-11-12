@@ -118,7 +118,9 @@ serve [
         }
     ]
 
-    GET "/post/(?<id>.+)" $[id][
+    ; regex routes: named capture groups
+    ; become the action's parameters
+    GET {//post/(?<id>[0-9]+)/} $[id][
         render.template {
             This is post with id: <||= id ||>
         }
