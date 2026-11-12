@@ -29,6 +29,9 @@ let 'x 5            ; alternative syntax
 Arturo provides several ways to handle conditional execution:
 
 ```arturo
+x: 2
+value: 2
+
 ; simple if statement
 if x=2 [
     print "x is two"
@@ -143,10 +146,11 @@ counter: 0
 
 ```arturo
 ; break from loop
-done?: false
+i: 0
 while [true][
-    if done? -> break
-    doSomething
+    i: i + 1
+    if i > 3 -> break
+    print i
 ]
 
 ; continue to next iteration

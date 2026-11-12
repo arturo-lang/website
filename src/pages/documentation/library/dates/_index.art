@@ -22,10 +22,10 @@ print current     ; 2024-12-13T14:30:45+01:00
 ; accessing components
 print current\year              ; 2024
 print current\month             ; 12
-print current\day]              ; 13
-print current\hour]             ; 14
-print current\minute]           ; 30
-print current\second]           ; 45
+print current\day               ; 13
+print current\hour              ; 14
+print current\minute            ; 30
+print current\second            ; 45
 ```
 
 #### Date Arithmetic
