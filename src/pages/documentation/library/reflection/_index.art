@@ -31,7 +31,7 @@ print stack      ; shows current value stack (as a block)
 #### Working with Attributes
 
 ```arturo
-doSth function [x][
+doSth: function [x][
     ; check if attribute exists
     if attr? 'verbose -> 
         print "verbose mode on"
@@ -76,9 +76,9 @@ elapsed: benchmark.get [
 print ["Operation took:" elapsed]
 
 ; multiple runs for better accuracy
-total: 0
+total: 0`ms
 loop 1..100 'run [
-    'total ++ benchmark.get [
+    total: total + benchmark.get [
         ; operation to measure
     ]
 ]
