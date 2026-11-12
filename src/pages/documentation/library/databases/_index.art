@@ -51,11 +51,10 @@ name: "Alice"
 query.with: @[name age] db "INSERT INTO users (name, age) VALUES (?,?)" 
 
 ; parametrized select
-minAge: 20
+minAge: 25
 results: query.with: @[minAge] db "SELECT * FROM users WHERE age > ?"
 loop results 'user ->
     print ["User:" user\1 "Age:" user\2]    
-; User: John Age: 25
 ; User: Alice Age: 30
 ```
 
