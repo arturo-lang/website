@@ -106,8 +106,7 @@ newUser: apiClient\post "/users" #[name: "John" email: "john@email.com"]
 
 ```arturo
 ; create a simple web server
-; create a simple web server
-serve.verbose [
+serve [
     GET "/" [
         render.template {
             <html>
