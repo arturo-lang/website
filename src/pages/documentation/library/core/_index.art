@@ -29,6 +29,9 @@ let 'x 5            ; alternative syntax
 Arturo provides several ways to handle conditional execution:
 
 ```arturo
+x: 2
+value: 2
+
 ; simple if statement
 if x=2 [
     print "x is two"
