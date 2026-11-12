@@ -126,9 +126,14 @@ serve [
         }
     ]
 
-    GET "/styles/(?<file>.+)" $[file][
-        ; serve static files
-        read file
+    ; serve static files - only allow plain filenames,
+    ; never pass the raw path to `read`!
+    GET {//css/(?<file>[a-zA-Z0-9_-]+\.css)/} $[file][
+        path: ~"css/|file|"
+        if not? file? path ->
+            return emit.status: 404 "Not found"
+
+        emit.css read path
     ]
 ]
 ```
