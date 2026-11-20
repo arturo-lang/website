@@ -125,10 +125,13 @@ jobs:
             matrix:
                 os: 
                     - windows-latest
+                    - windows-2025
                     - windows-2022
-                    - windows-2019
                 
                 shell_type: [bash, powershell]
+
+                include:
+                    - {os: windows-11-arm, shell_type: powershell}
             
             fail-fast: false
         
