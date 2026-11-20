@@ -163,6 +163,7 @@ jobs:
               run: |
                   $env:PATH = "$env:USERPROFILE\.arturo\bin;$env:PATH"
                   arturo -v
+                  arturo -e "print [{arch:} sys\cpu\arch]"
             
             - name: Show Windows version
               shell: powershell
