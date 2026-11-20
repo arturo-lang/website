@@ -17,7 +17,6 @@ jobs:
         strategy:
             matrix:
                 os: 
-                    - macos-14          # M1 (ARM)
                     - macos-15          # M1/M2 (ARM)
                     - macos-15-intel    # Intel
                     - macos-26          # M3 (ARM) - Beta
