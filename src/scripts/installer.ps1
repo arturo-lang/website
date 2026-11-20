@@ -151,11 +151,17 @@ function Detect-System {
     # Determine OS and Architecture
     $script:OS = "windows"
     
-    if ([Environment]::Is64BitOperatingSystem) {
-        $script:ARCH = "amd64"
-    } else {
+    if (-not [Environment]::Is64BitOperatingSystem) {
         Write-Error-Custom "32-bit Windows is not supported"
     }
+
+    # PROCESSOR_ARCHITEW6432 holds the real one, if we're running emulated
+    $cpu = if ($env:PROCESSOR_ARCHITEW6432) { $env:PROCESSOR_ARCHITEW6432 } else { $env:PROCESSOR_ARCHITECTURE }
+    if ($cpu -ne "ARM64") {
+        # an x64 PowerShell on ARM64 may still say AMD64: ask the CPU itself (12 = ARM64)
+        try { if ((Get-CimInstance Win32_Processor -ErrorAction Stop | Select-Object -First 1).Architecture -eq 12) { $cpu = "ARM64" } } catch {}
+    }
+    $script:ARCH = if ($cpu -eq "ARM64") { "arm64" } else { "amd64" }
     
     # Determine shell
     $script:SHELL_RC = "`$PROFILE (PowerShell profile)"
