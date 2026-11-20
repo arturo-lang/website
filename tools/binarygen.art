@@ -49,7 +49,7 @@ loop sort list "files" 'filename [
             if 2 < size parts [
                 thirdPart: get parts 2
                 ;inspect thirdPart
-                switch "mini" = thirdPart [
+                switch contains? ["mini" "noui"] thirdPart [
                     mode: thirdPart
                     if 3 < size parts [
                         if "legacy" = get parts 3 -> legacy: true
@@ -91,7 +91,8 @@ loop sort list "files" 'filename [
                 checksum: checksum
             ]
 
-            unless legacy [
+            ; legacy & noui builds aren't listed on the downloads page
+            unless or? legacy mode = "noui" [
                 binaries\[os]\arch\[arch]\[mode]: entry
             ]
             
