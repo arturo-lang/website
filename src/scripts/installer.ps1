@@ -226,6 +226,14 @@ function Download-Arturo {
     try {
         Get-WebContent -Url $url -OutFile $zipPath
     } catch {
+        if ($script:ARCH -eq "arm64") {
+            # no arm64 build for this version? the amd64 one runs fine under emulation
+            Write-Info "no arm64 build available: falling back to amd64"
+            $script:ARCH = "amd64"
+            Cleanup
+            Download-Arturo
+            return
+        }
         Write-Error-Custom "Download failed. Something went wrong, please check your connection."
     }
     
