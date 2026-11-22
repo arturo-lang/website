@@ -23,8 +23,10 @@ loop sort list "files" 'filename [
         artifactName: extract.filename filename
         
         ; Only process arturo-* files
-        if and? prefix? artifactName "arturo-"
-                not? contains? artifactName "-src" [
+        ; (WASI builds aren't listed on the downloads page - yet)
+        if all? @[prefix? artifactName "arturo-"
+                  not? contains? artifactName "-src"
+                  not? contains? artifactName "-wasi-"] [
             ;print ["Processing:" artifactName]
             
             ; Get size
