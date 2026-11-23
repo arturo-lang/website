@@ -260,7 +260,6 @@ function Install-Arturo {
     # Copy files
     $filesToCopy = @(
         @{ Source = "arturo.exe"; Required = $true }
-        @{ Source = "cacert.pem"; Required = $false }
     )
     
     $foundBinary = $false

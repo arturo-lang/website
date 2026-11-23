@@ -371,10 +371,6 @@ install_arturo() {
         cp "$TMP_DIR/arturo.exe" "$BIN_DIR/" || error "Failed to copy arturo.exe"
     fi
     
-    if [ -f "$TMP_DIR/cacert.pem" ]; then
-        cp "$TMP_DIR/cacert.pem" "$BIN_DIR/" || error "Failed to copy cacert.pem"
-    fi
-    
     if ls "$TMP_DIR"/*.dll 1> /dev/null 2>&1; then
         cp "$TMP_DIR"/*.dll "$BIN_DIR/" || error "Failed to copy DLL files"
     fi
